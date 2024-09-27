@@ -216,21 +216,27 @@ def circular_atributo(coluna, grupo, cores):
 # Função para aplicar filtro do botão "Espelho +1v"
 def aplicar_espelho():
     st.session_state['circulados'] = {}
-    numeros_espelho = [0, 32, 2, 4, 8, 9, 10, 12, 13, 14, 15, 21, 23, 26, 27, 28, 31, 32, 35, 36]
-    for numero in numeros_espelho:
-        st.session_state['circulados'][numero] = {'Espelho +1v': ('#0000ff', 'white')}  # Fundo azul e letra branca
+    numeros_escuro = [12, 21, 32, 23, 13, 31]
+    numeros_claro = [0, 2, 4, 8, 9, 10, 14, 15, 26, 28, 35, 36]
+    for numero in numeros_escuro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#00008B', 'white')}  # Azul escuro e letra branca
+    for numero in numeros_claro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#ADD8E6', 'black')}  # Azul claro e letra preta
     for numero in range(37):
-        if numero not in numeros_espelho:
+        if numero not in numeros_escuro and numero not in numeros_claro:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
 # Função para aplicar filtro do botão "11-22-33 +1v"
 def aplicar_112233():
     st.session_state['circulados'] = {}
-    numeros_112233 = [26, 0, 32, 36, 11, 30, 9, 22, 18, 1, 33, 16]
-    for numero in numeros_112233:
-        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#ffcc00', 'white')}  # Fundo amarelo escuro e letra branca
+    numeros_verde_escuro = [11, 22, 33, 0]
+    numeros_verde_claro = [26, 32, 36, 30, 9, 18, 1, 16]
+    for numero in numeros_verde_escuro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#006400', 'white')}  # Verde escuro e letra branca
+    for numero in numeros_verde_claro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
     for numero in range(37):
-        if numero not in numeros_112233:
+        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
 # Inicializa variáveis no session_state
