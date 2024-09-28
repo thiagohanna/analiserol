@@ -217,11 +217,37 @@ def circular_atributo(coluna, grupo, cores):
 def aplicar_terminal(escuros, claros):
     st.session_state['circulados'] = {}
     for numero in escuros:
-        st.session_state['circulados'][numero] = {'Terminal': ('#696969', 'white')}  # Cinza escuro e letra branca
+        st.session_state['circulados'][numero] = {'Terminal': ('#00008B', 'white')}  # Azul escuro e letra branca
     for numero in claros:
-        st.session_state['circulados'][numero] = {'Terminal': ('#D3D3D3', 'black')}  # Cinza claro e letra preta
+        st.session_state['circulados'][numero] = {'Terminal': ('#ADD8E6', 'black')}  # Azul claro e letra preta
     for numero in range(37):
         if numero not in escuros and numero not in claros:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
+# Função para aplicar filtro do botão "Espelho +1v"
+def aplicar_espelho():
+    st.session_state['circulados'] = {}
+    numeros_verde_escuro = [12, 21, 32, 23, 13, 31]
+    numeros_verde_claro = [0, 2, 4, 8, 9, 10, 14, 15, 26, 28, 35, 36]
+    for numero in numeros_verde_escuro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#006400', 'white')}  # Verde escuro e letra branca
+    for numero in numeros_verde_claro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
+    for numero in range(37):
+        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
+# Função para aplicar filtro do botão "11-22-33 +1v"
+def aplicar_112233():
+    st.session_state['circulados'] = {}
+    numeros_verde_escuro = [11, 22, 33, 0]
+    numeros_verde_claro = [26, 32, 36, 30, 9, 18, 1, 16]
+    for numero in numeros_verde_escuro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#006400', 'white')}  # Verde escuro e letra branca
+    for numero in numeros_verde_claro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
+    for numero in range(37):
+        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
 # Inicializa variáveis no session_state
@@ -356,6 +382,13 @@ with col_direita:
     with col7:
         if st.button("Terminal"):
             circular_atributo('Terminal', [str(i) for i in range(10)], cores['Terminal'])
+
+    # Botões novos para aplicar os filtros "Espelho +1v" e "11-22-33 +1v"
+    if st.button("Espelho +1v"):
+        aplicar_espelho()
+
+    if st.button("11-22-33 +1v"):
+        aplicar_112233()
 
     # Botões para aplicar filtros de terminais
     if st.button("Term 0"):
