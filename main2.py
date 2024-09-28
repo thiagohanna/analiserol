@@ -500,7 +500,7 @@ with col24:
         aplicar_terminal([8,19,28], [])
         st.session_state['legenda'] = "Numeros: 8,19,28 (+2v)"
 
-with co25:
+with col25:
     if st.button("Term 9"):
         aplicar_terminal([9,19,9], [])
         st.session_state['legenda'] = "Numeros: 9,19,9 (+2v)"
