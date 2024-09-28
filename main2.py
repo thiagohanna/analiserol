@@ -376,6 +376,9 @@ if st.session_state['legenda']:
 # Linha de botões dividida em três linhas
 st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
 
+# Coluna da direita - Apresentar a "Painel de resultados" e os botões
+with col_direita:
+# Botões de atributos
 col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
 col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
