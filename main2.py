@@ -303,7 +303,7 @@ if st.session_state['lista_master']:
     exibir_imagens(lista_master)
 
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
-col_esquerda, col_direita = st.columns([0.5, 0.5])
+col_esquerda, col_direita = st.columns([0.6, 0.4])  # Ajusta a proporção das colunas
 
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
@@ -365,94 +365,88 @@ with col_esquerda:
                 st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
 
 
-# Variável para armazenar legenda atual
-if 'legenda' not in st.session_state:
-    st.session_state['legenda'] = ""
+# Coluna da direita - Exibe o Painel de Resultados e os botões
+with col_direita:
+    st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
 
-# Exibe a legenda se houver
-if st.session_state['legenda']:
-    st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+    col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
+    col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
 
-# Linha de botões dividida em três linhas
-st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
+    with col1:
+        if st.button("Cor"):
+            circular_atributo('Cor', ['Vermelho', 'Preto'], {'Vermelho': cores['Cor']['Vermelho'], 'Preto': cores['Cor']['Preto']})
+            st.session_state['legenda'] = ""
 
-col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
-col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
+    with col2:
+        if st.button("Par/Ímpar"):
+            circular_atributo('Par/Ímpar', ['Par', 'Ímpar'], {'Par': cores['Par/Ímpar']['Par'], 'Ímpar': cores['Par/Ímpar']['Ímpar']})
+            st.session_state['legenda'] = ""
 
-with col1:
-    if st.button("Cor"):
-        circular_atributo('Cor', ['Vermelho', 'Preto'], {'Vermelho': cores['Cor']['Vermelho'], 'Preto': cores['Cor']['Preto']})
-        st.session_state['legenda'] = ""
+    with col3:
+        if st.button("Dúzia"):
+            circular_atributo('Dúzia', ['D1', 'D2', 'D3'], {'D1': cores['Dúzia']['D1'], 'D2': cores['Dúzia']['D2'], 'D3': cores['Dúzia']['D3']})
+            st.session_state['legenda'] = ""
 
-with col2:
-    if st.button("Par/Ímpar"):
-        circular_atributo('Par/Ímpar', ['Par', 'Ímpar'], {'Par': cores['Par/Ímpar']['Par'], 'Ímpar': cores['Par/Ímpar']['Ímpar']})
-        st.session_state['legenda'] = ""
+    with col4:
+        if st.button("Coluna"):
+            circular_atributo('Coluna', ['C1', 'C2', 'C3'], {'C1': cores['Coluna']['C1'], 'C2': cores['Coluna']['C2'], 'C3': cores['Coluna']['C3']})
+            st.session_state['legenda'] = ""
 
-with col3:
-    if st.button("Dúzia"):
-        circular_atributo('Dúzia', ['D1', 'D2', 'D3'], {'D1': cores['Dúzia']['D1'], 'D2': cores['Dúzia']['D2'], 'D3': cores['Dúzia']['D3']})
-        st.session_state['legenda'] = ""
+    with col5:
+        if st.button("Seção"):
+            circular_atributo('Seção', ['Zero', 'Voisin', 'Orphelins', 'Tier'], {'Zero': cores['Seção']['Zero'], 'Voisin': cores['Seção']['Voisin'], 'Orphelins': cores['Seção']['Orphelins'], 'Tier': cores['Seção']['Tier']})
+            st.session_state['legenda'] = ""
 
-with col4:
-    if st.button("Coluna"):
-        circular_atributo('Coluna', ['C1', 'C2', 'C3'], {'C1': cores['Coluna']['C1'], 'C2': cores['Coluna']['C2'], 'C3': cores['Coluna']['C3']})
-        st.session_state['legenda'] = ""
+    with col6:
+        if st.button("Tipo"):
+            circular_atributo('Tipo', ['Separado', 'Junto'], {'Separado': cores['Tipo']['Separado'], 'Junto': cores['Tipo']['Junto']})
+            st.session_state['legenda'] = ""
 
-with col5:
-    if st.button("Seção"):
-        circular_atributo('Seção', ['Zero', 'Voisin', 'Orphelins', 'Tier'], {'Zero': cores['Seção']['Zero'], 'Voisin': cores['Seção']['Voisin'], 'Orphelins': cores['Seção']['Orphelins'], 'Tier': cores['Seção']['Tier']})
-        st.session_state['legenda'] = ""
+    with col7:
+        if st.button("Terminal"):
+            circular_atributo('Terminal', [str(i) for i in range(10)], cores['Terminal'])
+            st.session_state['legenda'] = ""
 
-with col6:
-    if st.button("Tipo"):
-        circular_atributo('Tipo', ['Separado', 'Junto'], {'Separado': cores['Tipo']['Separado'], 'Junto': cores['Tipo']['Junto']})
-        st.session_state['legenda'] = ""
+    # Segunda linha de botões
+    with col8:
+        if st.button("Espelho +1v"):
+            aplicar_espelho()
+            st.session_state['legenda'] = "Numeros: 12,21,32,23,13,31 (+1v)"
 
-with col7:
-    if st.button("Terminal"):
-        circular_atributo('Terminal', [str(i) for i in range(10)], cores['Terminal'])
-        st.session_state['legenda'] = ""
+    with col9:
+        if st.button("11-22-33 +1v"):
+            aplicar_112233()
+            st.session_state['legenda'] = "Numeros: 11,22,33,0 (+1v)"
 
-# Segunda linha de botões
-with col8:
-    if st.button("Espelho +1v"):
-        aplicar_espelho()
-        st.session_state['legenda'] = "Numeros: 12,21,32,23,13,31 (+1v)"
+    with col10:
+        if st.button("Term Alto"):
+            aplicar_filtro_term(alto=True)
 
-with col9:
-    if st.button("11-22-33 +1v"):
-        aplicar_112233()
-        st.session_state['legenda'] = "Numeros: 11,22,33,0 (+1v)"
+    with col11:
+        if st.button("Term Baixo"):
+            aplicar_filtro_term(alto=False)
 
-with col10:
-    if st.button("Term Alto"):
-        aplicar_filtro_term(alto=True)
+    with col12:
+        if st.button("Term 1-9"):
+            aplicar_terminal([1,2,3,4,5,6,7,8,9], [])
+            st.session_state['legenda'] = "Numeros: 1,2,3,4,5,6,7,8,9"
 
-with col11:
-    if st.button("Term Baixo"):
-        aplicar_filtro_term(alto=False)
+    with col13:
+        if st.button("Term 10-19"):
+            aplicar_terminal([10,11,12,13,14,15,16,17,18,19], [])
+            st.session_state['legenda'] = "Numeros: 10,11,12,13,14,15,16,17,18,19"
 
-with col12:
-    if st.button("Term 1-9"):
-        aplicar_terminal([1,2,3,4,5,6,7,8,9], [])
-        st.session_state['legenda'] = "Numeros: 1,2,3,4,5,6,7,8,9"
+    with col14:
+        if st.button("Term 20-29"):
+            aplicar_terminal([20,21,22,23,24,25,26,27,28,29], [])
+            st.session_state['legenda'] = "Numeros: 20,21,22,23,24,25,26,27,28,29"
 
-with col13:
-    if st.button("Term 10-19"):
-        aplicar_terminal([10,11,12,13,14,15,16,17,18,19], [])
-        st.session_state['legenda'] = "Numeros: 10,11,12,13,14,15,16,17,18,19"
+    with col15:
+        if st.button("Term 30-36"):
+            aplicar_terminal([30,31,32,33,34,35,36], [])
+            st.session_state['legenda'] = "Numeros: 30,31,32,33,34,35,36"
 
-with col14:
-    if st.button("Term 20-29"):
-        aplicar_terminal([20,21,22,23,24,25,26,27,28,29], [])
-        st.session_state['legenda'] = "Numeros: 20,21,22,23,24,25,26,27,28,29"
-
-with col15:
-    if st.button("Term 30-36"):
-        aplicar_terminal([30,31,32,33,34,35,36], [])
-        st.session_state['legenda'] = "Numeros: 30,31,32,33,34,35,36"
         
 # Terceira linha de botões
 with col16:
