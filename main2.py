@@ -383,7 +383,6 @@ with col_direita:
     # Linha de botões
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
-    col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
 
     with col1:
         if st.button("Cor"):
@@ -463,95 +462,3 @@ with col_direita:
     if st.session_state['lista_master']:
         lista_master = st.session_state['lista_master']
         st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
-        
-# Terceira linha de botões
-with col16:
-    if st.button("Term 0"):
-        st.session_state['botao_term_0'] = True
-        aplicar_terminal([0, 10, 20, 30], [3, 26, 32, 15, 24, 5, 23, 8, 33, 1, 14, 31, 11, 36])
-        st.session_state['legenda'] = "Numeros: 0,10,20,30 (+2v)"
-
-with col17:
-    if st.button("Term 1"):
-        st.session_state['botao_term_1'] = True
-        aplicar_terminal([1,11,21,31], [16,33,20,14,8,30,36,13,25,2,4,19,9,22])
-        st.session_state['legenda'] = "Numeros: 1,11,21,31 (+2v)"
-
-with col18:
-    if st.button("Term 2"):
-        st.session_state['botao_term_2'] = True
-        aplicar_terminal([2,12,22,32], [17,25,21,4,7,28,35,3,31,9,18,29,26,0,19,15])
-        st.session_state['legenda'] = "Numeros: 2,12,22,32 (+2v)"
-
-with col19:
-    if st.button("Term 3"):
-        st.session_state['botao_term_3'] = True
-        aplicar_terminal([3,13,23,33], [12,35,26,0,11,36,27,6,5,10,8,30,24,16,1,20])
-        st.session_state['legenda'] = "Numeros: 3,13,23,33 (+2v)"
-
-with col20:
-    if st.button("Term 4"):
-        st.session_state['botao_term_4'] = True
-        aplicar_terminal([4,14,24,34], [2,21,19,15,1,20,31,9,10,5,16,33,27,6,17,25])
-        st.session_state['legenda'] = "Numeros: 4,14,24,34 (+2v)"
-
-with col21:
-    if st.button("Term 5"):
-        st.session_state['botao_term_5'] = True
-        aplicar_terminal([5,15,25,35], [23,10,24,16,4,19,32,0,34,17,2,21,28,12,3,26])
-        st.session_state['legenda'] = "Numeros: 5,15,25,35 (+2v)"
-
-with col22:
-    if st.button("Term 6"):
-        st.session_state['botao_term_6'] = True
-        aplicar_terminal([6,16,26,36], [13,27,34,17,5,24,33,1,35,3,0,32,30,11])
-        st.session_state['legenda'] = "Numeros: 6,16,26,36 (+2v)"
-
-with col23:
-    if st.button("Term 7"):
-        st.session_state['botao_term_7'] = True
-        aplicar_terminal([7,17,27], [18,29,28,12,6,34,25,2,36,13])
-        st.session_state['legenda'] = "Numeros: 7,17,27 (+2v)"
-
-with col24:
-    if st.button("Term 8"):
-        st.session_state['botao_term_8'] = True
-        aplicar_terminal([8,19,28], [10,23,30,11,9,22,29,7,12,35])
-        st.session_state['legenda'] = "Numeros: 8,19,28 (+2v)"
-
-with col25:
-    if st.button("Term 9"):
-        st.session_state['botao_term_9'] = True
-        aplicar_terminal([9,19,9], [14,31,22,18,21,4,15,32,7,28])
-        st.session_state['legenda'] = "Numeros: 9,19,9 (+2v)"
-
-# Verificações para manter o estado após o clique nos botões
-if st.session_state['botao_term_0']:
-    aplicar_terminal([0, 10, 20, 30], [3, 26, 32, 15, 24, 5, 23, 8, 33, 1, 14, 31, 11, 36])
-
-if st.session_state['botao_term_1']:
-    aplicar_terminal([1, 11, 21, 31], [16, 33, 20, 14, 8, 30, 36, 13, 25, 2, 4, 19, 9, 22])
-
-if st.session_state['botao_term_2']:
-    aplicar_terminal([2, 12, 22, 32], [17, 25, 21, 4, 7, 28, 35, 3, 31, 9, 18, 29, 26, 0, 19, 15])
-
-if st.session_state['botao_term_3']:
-    aplicar_terminal([3, 13, 23, 33], [12, 35, 26, 0, 11, 36, 27, 6, 5, 10, 8, 30, 24, 16, 1, 20])
-
-if st.session_state['botao_term_4']:
-    aplicar_terminal([4, 14, 24, 34], [2, 21, 19, 15, 1, 20, 31, 9, 10, 5, 16, 33, 27, 6, 17, 25])
-
-if st.session_state['botao_term_5']:
-    aplicar_terminal([5, 15, 25, 35], [23, 10, 24, 16, 4, 19, 32, 0, 34, 17, 2, 21, 28, 12, 3, 26])
-
-if st.session_state['botao_term_6']:
-    aplicar_terminal([6, 16, 26, 36], [13, 27, 34, 17, 5, 24, 33, 1, 35, 3, 0, 32, 30, 11])
-
-if st.session_state['botao_term_7']:
-    aplicar_terminal([7, 17, 27], [18, 29, 28, 12, 6, 34, 25, 2, 36, 13])
-
-if st.session_state['botao_term_8']:
-    aplicar_terminal([8, 19, 28], [10, 23, 30, 11, 9, 22, 29, 7, 12, 35])
-
-if st.session_state['botao_term_9']:
-    aplicar_terminal([9, 19, 9], [14, 31, 22, 18, 21, 4, 15, 32, 7, 28])
