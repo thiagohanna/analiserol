@@ -509,8 +509,18 @@ with col25:
     if st.button("Term 9"):
         aplicar_terminal([9,19,9], [14,31,22,18,21,4,15,32,7,28])
         st.session_state['legenda'] = "Numeros: 9,19,9 (+2v)"
+# Exibe a legenda com base no botão selecionado
+st.markdown(f"<h3>Painel de Resultados</h3><p>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
 
-    # Painel de Resultados (Tabela)
-    if st.session_state['lista_master']:
-        lista_master = st.session_state['lista_master']
-        st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
+# Função para exibir a lista formatada (pode ser customizada com os números circulados)
+def formatar_lista_master(lista_master, circulados={}):
+    formatted_numbers = []
+    for numero in lista_master:
+        bg_color, text_color = circulados.get(numero, ('#ffffff', 'black'))  # Fundo branco e texto preto por padrão
+        formatted_numbers.append(f"<td style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
+    linhas = ['<tr>' + ''.join(formatted_numbers[i:i + 10]) + '</tr>' for i in range(0, len(formatted_numbers), 10)]
+    return '<table style="width:100%; table-layout:fixed;">' + ''.join(linhas) + '</table>'
+
+# Exibe a lista formatada
+if st.session_state['lista_master']:
+    st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True)
