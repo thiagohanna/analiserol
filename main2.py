@@ -223,6 +223,9 @@ def aplicar_terminal(escuros, claros):
         if numero not in escuros and numero not in claros:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
+# Força a recarga da interface após a mudança de estado
+    st.experimental_rerun()
+
 # Função para aplicar filtro do botão "Espelho +1v"
 def aplicar_espelho():
     st.session_state['circulados'] = {}
