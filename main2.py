@@ -113,7 +113,7 @@ def tratar_lista_master(texto):
     texto = texto.replace('\n', ' ').replace('\r', ' ')  # Remove quebras de linha
     lista = texto.replace(',', ' ').split()  # Aceita vírgulas e espaços como separadores
     lista = [int(n) for n in lista if n.isdigit() and 0 <= int(n) <= 36]  # Filtra apenas números válidos (0-36)
-    return lista
+    return list(set(lista))  # Garante que cada número é único
 
 # Função para formatar a lista master
 def formatar_lista_master(lista_master, circulados={}):
@@ -138,13 +138,13 @@ def analisar_roleta(lista_master):
     resultado = {}
 
     # Totais por cada atributo
-    total_cor = df_filtrado['Dúzia'].count()
-    total_paridade = df_filtrado['Par/Ímpar'].count()
-    total_duzia = df_filtrado['Dúzia'].count()
-    total_coluna = df_filtrado['Coluna'].count()
-    total_secao = df_filtrado['Seção'].count()
-    total_tipo = df_filtrado['Tipo'].count()
-    total_terminal = df_filtrado['Terminal'].count()
+    total_cor = df_filtrado['Dúzia'].nunique()
+    total_paridade = df_filtrado['Par/Ímpar'].nunique()
+    total_duzia = df_filtrado['Dúzia'].nunique()
+    total_coluna = df_filtrado['Coluna'].nunique()
+    total_secao = df_filtrado['Seção'].nunique()
+    total_tipo = df_filtrado['Tipo'].nunique()
+    total_terminal = df_filtrado['Terminal'].nunique()
 
     # Cor
     resultado['Cor Vermelho'] = (df_filtrado['Cor'] == 'Vermelho').sum()
@@ -384,42 +384,32 @@ with col_direita:
             circular_atributo('Terminal', [str(i) for i in range(10)], cores['Terminal'])
 
     # Botões novos para aplicar os filtros "Espelho +1v" e "11-22-33 +1v"
-    if st.button("Espelho +1v"):
-        aplicar_espelho()
+    espelho_btn, analise_btn = st.columns([1, 1])
+    with espelho_btn:
+        if st.button("Espelho +1v"):
+            aplicar_espelho()
 
-    if st.button("11-22-33 +1v"):
-        aplicar_112233()
+    with analise_btn:
+        if st.button("11-22-33 +1v"):
+            aplicar_112233()
 
     # Botões para aplicar filtros de terminais
-    if st.button("Term 0"):
-        aplicar_terminal([0, 10, 20, 30], [3, 26, 32, 15, 24, 5, 23, 8, 33, 1, 14, 31, 11, 36])
-    
-    if st.button("Term 1"):
-        aplicar_terminal([1, 11, 21, 31], [16, 33, 20, 14, 8, 30, 36, 13, 25, 2, 4, 19, 9, 22])
-    
-    if st.button("Term 2"):
-        aplicar_terminal([2, 12, 22, 32], [17, 25, 21, 4, 7, 28, 35, 3, 31, 9, 18, 29, 26, 0, 19, 15])
-
-    if st.button("Term 3"):
-        aplicar_terminal([3, 13, 23, 33], [12, 35, 26, 0, 11, 36, 27, 6, 5, 10, 8, 30, 24, 16, 1, 20])
-
-    if st.button("Term 4"):
-        aplicar_terminal([4, 14, 24, 34], [2, 21, 19, 15, 1, 20, 31, 9, 10, 5, 16, 33, 27, 6, 17, 25])
-
-    if st.button("Term 5"):
-        aplicar_terminal([5, 15, 25, 35], [23, 10, 24, 16, 4, 19, 32, 0, 34, 17, 2, 21, 28, 12, 3, 26])
-
-    if st.button("Term 6"):
-        aplicar_terminal([6, 16, 26, 36], [13, 27, 34, 17, 5, 24, 33, 1, 35, 3, 0, 32, 30, 11])
-
-    if st.button("Term 7"):
-        aplicar_terminal([7, 17, 27], [18, 29, 28, 12, 6, 34, 25, 2, 36, 13])
-
-    if st.button("Term 8"):
-        aplicar_terminal([8, 19, 28], [10, 23, 30, 11, 9, 22, 29, 7, 12, 35])
-
-    if st.button("Term 9"):
-        aplicar_terminal([9, 19, 9], [14, 31, 22, 18, 21, 4, 15, 32, 7, 28])
+    cols_term = st.columns(10)
+    for i, (label, escuros, claros) in enumerate([
+        ("Term 0", [0, 10, 20, 30], [3, 26, 32, 15, 24, 5, 23, 8, 33, 1, 14, 31, 11, 36]),
+        ("Term 1", [1, 11, 21, 31], [16, 33, 20, 14, 8, 30, 36, 13, 25, 2, 4, 19, 9, 22]),
+        ("Term 2", [2, 12, 22, 32], [17, 25, 21, 4, 7, 28, 35, 3, 31, 9, 18, 29, 26, 0, 19, 15]),
+        ("Term 3", [3, 13, 23, 33], [12, 35, 26, 0, 11, 36, 27, 6, 5, 10, 8, 30, 24, 16, 1, 20]),
+        ("Term 4", [4, 14, 24, 34], [2, 21, 19, 15, 1, 20, 31, 9, 10, 5, 16, 33, 27, 6, 17, 25]),
+        ("Term 5", [5, 15, 25, 35], [23, 10, 24, 16, 4, 19, 32, 0, 34, 17, 2, 21, 28, 12, 3, 26]),
+        ("Term 6", [6, 16, 26, 36], [13, 27, 34, 17, 5, 24, 33, 1, 35, 3, 0, 32, 30, 11]),
+        ("Term 7", [7, 17, 27], [18, 29, 28, 12, 6, 34, 25, 2, 36, 13]),
+        ("Term 8", [8, 19, 28], [10, 23, 30, 11, 9, 22, 29, 7, 12, 35]),
+        ("Term 9", [9, 19, 9], [14, 31, 22, 18, 21, 4, 15, 32, 7, 28]),
+    ]):
+        with cols_term[i]:
+            if st.button(label):
+                aplicar_terminal(escuros, claros)
 
     # Exibe o Painel de Resultados
     st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
