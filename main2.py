@@ -303,7 +303,7 @@ if st.session_state['lista_master']:
     exibir_imagens(lista_master)
 
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
-col_esquerda, col_direita = st.columns([0.5, 0.5])
+col_esquerda, col_direita = st.columns([0.6, 0.4])
 
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
