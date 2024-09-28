@@ -194,13 +194,13 @@ def analisar_roleta(lista_master):
 
 # Função para exibir imagens
 def exibir_imagens(lista_master):
-    ultimos_seis = lista_master[:6]
-    cols = st.columns(min(6, len(ultimos_seis)))
-    for i in range(min(6, len(ultimos_seis))):
-        num = ultimos_seis[i]
+    ultimos_dez = lista_master[:10]
+    cols = st.columns(min(10, len(ultimos_dez)))
+    for i in range(min(10, len(ultimos_dez))):
+        num = ultimos_dez[i]
         # Verifica se o número tem uma imagem associada
         if num in image_links:
-            cols[i].image(image_links[num], width=150)
+            cols[i].image(image_links[num], width=100)
         else:
             cols[i].write(f"Imagem não disponível para {num}")
 
@@ -234,17 +234,40 @@ def aplicar_filtro_numeros(escuros, legenda_texto):
         if numero not in escuros:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
+# Função para aplicar filtro do botão "Espelho +1v"
+def aplicar_espelho():
+    st.session_state['circulados'] = {}
+    st.session_state['legenda'] = "Numeros: 12,21,32,23,13,31 (+1v)"
+    numeros_verde_escuro = [12, 21, 32, 23, 13, 31]
+    numeros_verde_claro = [0, 2, 4, 8, 9, 10, 14, 15, 26, 28, 35, 36]
+    for numero in numeros_verde_escuro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#006400', 'white')}  # Verde escuro e letra branca
+    for numero in numeros_verde_claro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
+    for numero in range(37):
+        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
+# Função para aplicar filtro do botão "11-22-33 +1v"
+def aplicar_112233():
+    st.session_state['circulados'] = {}
+    st.session_state['legenda'] = "Numeros: 11,22,33,0 (+1v)"
+    numeros_verde_escuro = [11, 22, 33, 0]
+    numeros_verde_claro = [26, 32, 36, 30, 9, 18, 1, 16]
+    for numero in numeros_verde_escuro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#006400', 'white')}  # Verde escuro e letra branca
+    for numero in numeros_verde_claro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
+    for numero in range(37):
+        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
 # Inicializa variáveis no session_state
 if 'lista_master' not in st.session_state:
     st.session_state['lista_master'] = []
 
 if 'circulados' not in st.session_state:
     st.session_state['circulados'] = {}
-
-# Adiciona persistência para os resultados da análise
-if 'resultado' not in st.session_state:
-    st.session_state['resultado'] = None
-    st.session_state['totais'] = None
 
 if 'legenda' not in st.session_state:
     st.session_state['legenda'] = ""
@@ -294,7 +317,7 @@ with col_esquerda:
 
         # Dúzias
         with col1:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Dúzia</strong></div>", unsafe_allow_html=True)
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'>Dúzia</div>", unsafe_allow_html=True)
             st.markdown(create_cell("D1", resultado['D1'], int((resultado['D1'] / totais['Dúzia']) * 100), cores['Dúzia']['D1'][0], cores['Dúzia']['D1'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("D2", resultado['D2'], int((resultado['D2'] / totais['Dúzia']) * 100), cores['Dúzia']['D2'][0], cores['Dúzia']['D2'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("D3", resultado['D3'], int((resultado['D3'] / totais['Dúzia']) * 100), cores['Dúzia']['D3'][0], cores['Dúzia']['D3'][1]), unsafe_allow_html=True)
@@ -302,7 +325,7 @@ with col_esquerda:
 
         # Colunas
         with col2:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Coluna</strong></div>", unsafe_allow_html=True)
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'>Coluna</div>", unsafe_allow_html=True)
             st.markdown(create_cell("C1", resultado['C1'], int((resultado['C1'] / totais['Coluna']) * 100), cores['Coluna']['C1'][0], cores['Coluna']['C1'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("C2", resultado['C2'], int((resultado['C2'] / totais['Coluna']) * 100), cores['Coluna']['C2'][0], cores['Coluna']['C2'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("C3", resultado['C3'], int((resultado['C3'] / totais['Coluna']) * 100), cores['Coluna']['C3'][0], cores['Coluna']['C3'][1]), unsafe_allow_html=True)
@@ -310,14 +333,14 @@ with col_esquerda:
 
         # Par/Ímpar
         with col3:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Par/Ímpar</strong></div>", unsafe_allow_html=True)
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'>Par/Ímpar</div>", unsafe_allow_html=True)
             st.markdown(create_cell("Par", resultado['Par'], int((resultado['Par'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Par'][0], cores['Par/Ímpar']['Par'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("Ímpar", resultado['Ímpar'], int((resultado['Ímpar'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Ímpar'][0], cores['Par/Ímpar']['Ímpar'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("Zero", resultado['Zero'], int((resultado['Zero'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Zero'][0], cores['Par/Ímpar']['Zero'][1]), unsafe_allow_html=True)
 
         # Seção
         with col4:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Seção</strong></div>", unsafe_allow_html=True)
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'>Seção</div>", unsafe_allow_html=True)
             st.markdown(create_cell("Zero", resultado['Seção Zero'], int((resultado['Seção Zero'] / totais['Seção']) * 100), cores['Seção']['Zero'][0], cores['Seção']['Zero'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("Voisin", resultado['Seção Voisin'], int((resultado['Seção Voisin'] / totais['Seção']) * 100), cores['Seção']['Voisin'][0], cores['Seção']['Voisin'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("Orphelins", resultado['Seção Orphelins'], int((resultado['Seção Orphelins'] / totais['Seção']) * 100), cores['Seção']['Orphelins'][0], cores['Seção']['Orphelins'][1]), unsafe_allow_html=True)
@@ -325,14 +348,14 @@ with col_esquerda:
 
         # Tipo
         with col5:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Tipo</strong></div>", unsafe_allow_html=True)
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'>Tipo</div>", unsafe_allow_html=True)
             st.markdown(create_cell("Zero", resultado['Tipo Zero'], int((resultado['Tipo Zero'] / totais['Tipo']) * 100), cores['Tipo']['Zero'][0], cores['Tipo']['Zero'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("Separado", resultado['Separado'], int((resultado['Separado'] / totais['Tipo']) * 100), cores['Tipo']['Separado'][0], cores['Tipo']['Separado'][1]), unsafe_allow_html=True)
             st.markdown(create_cell("Junto", resultado['Junto'], int((resultado['Junto'] / totais['Tipo']) * 100), cores['Tipo']['Junto'][0], cores['Tipo']['Junto'][1]), unsafe_allow_html=True)
 
         # Terminais
         with col6:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Terminal</strong></div>", unsafe_allow_html=True)
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'>Terminal</div>", unsafe_allow_html=True)
             for i in range(10):
                 bg_color, font_color = cores['Terminal'][str(i)]
                 st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
@@ -406,8 +429,12 @@ with col_direita:
         if st.button("Term 30-36"):
             aplicar_filtro_numeros([30, 31, 32, 33, 34, 35, 36], "Numeros: 30,31,32,33,34,35,36")
 
+    # Exibe a legenda acima do Painel de Resultados
+    if st.session_state['legenda']:
+        st.markdown(f"<div style='font-size:14px; margin-bottom:10px;'>{st.session_state['legenda']}</div>", unsafe_allow_html=True)
+
     # Exibe o Painel de Resultados
-    st.markdown(f"<h4>Painel de Resultados - {st.session_state['legenda']}</h4>", unsafe_allow_html=True)
+    st.markdown(f"<h4>Painel de Resultados</h4>", unsafe_allow_html=True)
     if st.session_state['lista_master']:
         lista_master = st.session_state['lista_master']
         st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
