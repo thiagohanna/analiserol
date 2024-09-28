@@ -524,8 +524,3 @@ def formatar_lista_master(lista_master, circulados={}):
 # Exibe a lista formatada
 if st.session_state['lista_master']:
     st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True)
-
-   # Painel de Resultados (Tabela)
-    if st.session_state['lista_master']:
-        lista_master = st.session_state['lista_master']
-        st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
