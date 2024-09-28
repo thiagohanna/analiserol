@@ -305,13 +305,13 @@ if st.session_state['lista_master']:
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
 col_esquerda, col_direita = st.columns([0.5, 0.5])
 
-# Coluna da esquerda - Apresentar resultados do "Analisar Números" e o Painel de Resultados
+# Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
-    # Exibe os resultados organizados em 7 colunas
     if st.session_state['resultado'] and st.session_state['totais']:
         resultado = st.session_state['resultado']
         totais = st.session_state['totais']
 
+        # Exibe os resultados organizados em 7 colunas
         st.markdown("### Tabela de análise de resultados")  # Título da tabela
         col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
@@ -364,24 +364,21 @@ with col_esquerda:
                 bg_color, font_color = cores['Terminal'][str(i)]
                 st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
 
-    # Exibe o Painel de Resultados
-    if st.session_state['lista_master']:
-        lista_master = st.session_state['lista_master']
-        st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
 
-    # Exibe a legenda se houver
-    if st.session_state['legenda']:
-        st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
+# Variável para armazenar legenda atual
+if 'legenda' not in st.session_state:
+    st.session_state['legenda'] = ""
 
-# Coluna da direita - Apresentar a "Painel de Resultados" e os botões de filtro
-with col_direita:
-    # Linha de botões dividida em três linhas
-    st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
+# Exibe a legenda se houver
+if st.session_state['legenda']:
+    st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
 
-    # Botões de atributos
-    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-    col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
-    col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
+# Linha de botões dividida em três linhas
+st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
+
+col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
+col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
 
 with col1:
     if st.button("Cor"):
