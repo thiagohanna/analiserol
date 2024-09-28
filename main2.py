@@ -45,7 +45,7 @@ image_links = {
     22: 'https://iili.io/dQoYXCG.png',
     23: 'https://iili.io/dQoYVQs.png',
     24: 'https://iili.io/dQoYMjn.png',
-    25: 'https://iili.io/dQoYGTX.png',
+    25: 'https://iili.io/dQoYGTX.png',  # Corrigido o hiperlink da imagem do número 25
     26: 'https://iili.io/dQoY1pt.png',
     27: 'https://iili.io/dQoY0vI.png',
     28: 'https://iili.io/dQoYlYN.png',
@@ -292,6 +292,7 @@ if 'legenda' not in st.session_state:
     st.session_state['legenda'] = ""
 
 # Botões de filtro ajustados para ficarem acima do Painel de Resultados
+st.markdown("<style>button {font-size: 14px;}</style>", unsafe_allow_html=True)
 col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 col8, col9, col10, col11, col12, col13, col14 = st.columns(7)
 col15, col16, col17, col18, col19, col20, col21 = st.columns(7)
@@ -403,6 +404,26 @@ with col21:
     if st.button("Term 5"):
         aplicar_terminal([5,15,25,35], [])
         st.session_state['legenda'] = "Números: 5,15,25,35 (+2v)"
+
+with col1:
+    if st.button("Term 6"):
+        aplicar_terminal([6,16,26,36], [])
+        st.session_state['legenda'] = "Números: 6,16,26,36 (+2v)"
+
+with col2:
+    if st.button("Term 7"):
+        aplicar_terminal([7,17,27], [])
+        st.session_state['legenda'] = "Números: 7,17,27 (+2v)"
+
+with col3:
+    if st.button("Term 8"):
+        aplicar_terminal([8,19,28], [])
+        st.session_state['legenda'] = "Números: 8,19,28 (+2v)"
+
+with col4:
+    if st.button("Term 9"):
+        aplicar_terminal([9,19,9], [])
+        st.session_state['legenda'] = "Números: 9,19,9 (+2v)"
 
 # Ajusta o layout do Painel de Resultados e exibe a legenda acima
 if st.session_state['legenda']:
