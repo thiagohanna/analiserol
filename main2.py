@@ -45,7 +45,7 @@ image_links = {
     22: 'https://iili.io/dQoYXCG.png',
     23: 'https://iili.io/dQoYVQs.png',
     24: 'https://iili.io/dQoYMjn.png',
-    25: 'https://iili.io/dQoY1pt.png',
+    25: 'https://iili.io/dQoYGTX.png',  # Corrigido o hiperlink da imagem do número 25
     26: 'https://iili.io/dQoY1pt.png',
     27: 'https://iili.io/dQoY0vI.png',
     28: 'https://iili.io/dQoYlYN.png',
@@ -213,30 +213,15 @@ def circular_atributo(coluna, grupo, cores):
             st.session_state['circulados'][row['Número']] = {}
         st.session_state['circulados'][row['Número']][coluna] = cores[row[coluna]]
 
-# Função para aplicar filtro do botão "Espelho +1v"
-def aplicar_espelho():
+# Função para aplicar filtro do botão de terminal
+def aplicar_terminal(escuros, claros):
     st.session_state['circulados'] = {}
-    numeros_escuro = [12, 21, 32, 23, 13, 31]
-    numeros_claro = [0, 2, 4, 8, 9, 10, 14, 15, 26, 28, 35, 36]
-    for numero in numeros_escuro:
-        st.session_state['circulados'][numero] = {'Espelho +1v': ('#00008B', 'white')}  # Azul escuro e letra branca
-    for numero in numeros_claro:
-        st.session_state['circulados'][numero] = {'Espelho +1v': ('#ADD8E6', 'black')}  # Azul claro e letra preta
+    for numero in escuros:
+        st.session_state['circulados'][numero] = {'Terminal': ('#696969', 'white')}  # Cinza escuro e letra branca
+    for numero in claros:
+        st.session_state['circulados'][numero] = {'Terminal': ('#D3D3D3', 'black')}  # Cinza claro e letra preta
     for numero in range(37):
-        if numero not in numeros_escuro and numero not in numeros_claro:
-            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
-
-# Função para aplicar filtro do botão "11-22-33 +1v"
-def aplicar_112233():
-    st.session_state['circulados'] = {}
-    numeros_verde_escuro = [11, 22, 33, 0]
-    numeros_verde_claro = [26, 32, 36, 30, 9, 18, 1, 16]
-    for numero in numeros_verde_escuro:
-        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#006400', 'white')}  # Verde escuro e letra branca
-    for numero in numeros_verde_claro:
-        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
-    for numero in range(37):
-        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
+        if numero not in escuros and numero not in claros:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
 # Inicializa variáveis no session_state
@@ -372,12 +357,36 @@ with col_direita:
         if st.button("Terminal"):
             circular_atributo('Terminal', [str(i) for i in range(10)], cores['Terminal'])
 
-    # Botões novos para aplicar os filtros "Espelho +1v" e "11-22-33 +1v"
-    if st.button("Espelho +1v"):
-        aplicar_espelho()
+    # Botões para aplicar filtros de terminais
+    if st.button("Term 0"):
+        aplicar_terminal([0, 10, 20, 30], [3, 26, 32, 15, 24, 5, 23, 8, 33, 1, 14, 31, 11, 36])
+    
+    if st.button("Term 1"):
+        aplicar_terminal([1, 11, 21, 31], [16, 33, 20, 14, 8, 30, 36, 13, 25, 2, 4, 19, 9, 22])
+    
+    if st.button("Term 2"):
+        aplicar_terminal([2, 12, 22, 32], [17, 25, 21, 4, 7, 28, 35, 3, 31, 9, 18, 29, 26, 0, 19, 15])
 
-    if st.button("11-22-33 +1v"):
-        aplicar_112233()
+    if st.button("Term 3"):
+        aplicar_terminal([3, 13, 23, 33], [12, 35, 26, 0, 11, 36, 27, 6, 5, 10, 8, 30, 24, 16, 1, 20])
+
+    if st.button("Term 4"):
+        aplicar_terminal([4, 14, 24, 34], [2, 21, 19, 15, 1, 20, 31, 9, 10, 5, 16, 33, 27, 6, 17, 25])
+
+    if st.button("Term 5"):
+        aplicar_terminal([5, 15, 25, 35], [23, 10, 24, 16, 4, 19, 32, 0, 34, 17, 2, 21, 28, 12, 3, 26])
+
+    if st.button("Term 6"):
+        aplicar_terminal([6, 16, 26, 36], [13, 27, 34, 17, 5, 24, 33, 1, 35, 3, 0, 32, 30, 11])
+
+    if st.button("Term 7"):
+        aplicar_terminal([7, 17, 27], [18, 29, 28, 12, 6, 34, 25, 2, 36, 13])
+
+    if st.button("Term 8"):
+        aplicar_terminal([8, 19, 28], [10, 23, 30, 11, 9, 22, 29, 7, 12, 35])
+
+    if st.button("Term 9"):
+        aplicar_terminal([9, 19, 9], [14, 31, 22, 18, 21, 4, 15, 32, 7, 28])
 
     # Exibe o Painel de Resultados
     st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
