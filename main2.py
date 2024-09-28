@@ -302,8 +302,8 @@ if st.session_state['lista_master']:
     lista_master = st.session_state['lista_master']
     exibir_imagens(lista_master)
 
-# Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
-col_esquerda, col_direita = st.columns([0.6, 0.4])  # Ajusta a proporção das colunas
+# Linha principal de layout dividida em duas colunas (esquerda para análise, direita para os botões e painel)
+col_esquerda, col_direita = st.columns([0.6, 0.4])  # 60% para análise, 40% para botões e painel
 
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
@@ -365,10 +365,11 @@ with col_esquerda:
                 st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
 
 
-# Coluna da direita - Exibe o Painel de Resultados e os botões
+# Coluna da direita - Botões e Painel de Resultados
 with col_direita:
     st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
 
+    # Linha de botões
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
     col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
@@ -447,6 +448,10 @@ with col_direita:
             aplicar_terminal([30,31,32,33,34,35,36], [])
             st.session_state['legenda'] = "Numeros: 30,31,32,33,34,35,36"
 
+    # Painel de Resultados (Tabela)
+    if st.session_state['lista_master']:
+        lista_master = st.session_state['lista_master']
+        st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
         
 # Terceira linha de botões
 with col16:
