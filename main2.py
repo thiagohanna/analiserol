@@ -113,21 +113,20 @@ def tratar_lista_master(texto):
     texto = texto.replace('\n', ' ').replace('\r', ' ')  # Remove quebras de linha
     lista = texto.replace(',', ' ').split()  # Aceita vírgulas e espaços como separadores
     lista = [int(n) for n in lista if n.isdigit() and 0 <= int(n) <= 36]  # Filtra apenas números válidos (0-36)
-    return list(set(lista))  # Garante que cada número é único
+    return lista  # Mantém os números duplicados
 
 # Função para formatar a lista master
 def formatar_lista_master(lista_master, circulados={}):
-    df_lista = pd.DataFrame(lista_master, columns=["Número"])
-    df_lista = df_lista.merge(df[['Número', 'Dúzia', 'Coluna', 'Par/Ímpar', 'Tipo', 'Seção', 'Cor']], on="Número", how="left")
     formatted_numbers = []
-    for index, row in df_lista.iterrows():
-        bg_color, text_color = cores['Par/Ímpar']['Zero'] if row['Número'] == 0 else cores['Cor'][row['Cor']]
+    for numero in lista_master:
+        row = df[df['Número'] == numero].iloc[0]
+        bg_color, text_color = cores['Par/Ímpar']['Zero'] if numero == 0 else cores['Cor'][row['Cor']]
         
-        if row['Número'] in circulados:
-            for attr, color in circulados[row['Número']].items():
+        if numero in circulados:
+            for attr, color in circulados[numero].items():
                 bg_color, text_color = color
         
-        formatted_numbers.append(f"<td style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{row['Número']}</td>")
+        formatted_numbers.append(f"<td style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
 
     linhas = ['<tr>' + ''.join(formatted_numbers[i:i+10]) + '</tr>' for i in range(0, len(formatted_numbers), 10)]
     return '<table style="width:100%; table-layout:fixed;">' + ''.join(linhas) + '</table>'
@@ -138,48 +137,48 @@ def analisar_roleta(lista_master):
     resultado = {}
 
     # Totais por cada atributo
-    total_cor = df_filtrado['Dúzia'].nunique()
-    total_paridade = df_filtrado['Par/Ímpar'].nunique()
-    total_duzia = df_filtrado['Dúzia'].nunique()
-    total_coluna = df_filtrado['Coluna'].nunique()
-    total_secao = df_filtrado['Seção'].nunique()
-    total_tipo = df_filtrado['Tipo'].nunique()
-    total_terminal = df_filtrado['Terminal'].nunique()
+    total_cor = len(lista_master)
+    total_paridade = len(lista_master)
+    total_duzia = len(lista_master)
+    total_coluna = len(lista_master)
+    total_secao = len(lista_master)
+    total_tipo = len(lista_master)
+    total_terminal = len(lista_master)
 
     # Cor
-    resultado['Cor Vermelho'] = (df_filtrado['Cor'] == 'Vermelho').sum()
-    resultado['Cor Preto'] = (df_filtrado['Cor'] == 'Preto').sum()
+    resultado['Cor Vermelho'] = sum([1 for n in lista_master if df[df['Número'] == n]['Cor'].values[0] == 'Vermelho'])
+    resultado['Cor Preto'] = sum([1 for n in lista_master if df[df['Número'] == n]['Cor'].values[0] == 'Preto'])
 
     # Par/Ímpar
-    resultado['Par'] = (df_filtrado['Par/Ímpar'] == 'Par').sum()
-    resultado['Ímpar'] = (df_filtrado['Par/Ímpar'] == 'Ímpar').sum()
+    resultado['Par'] = sum([1 for n in lista_master if df[df['Número'] == n]['Par/Ímpar'].values[0] == 'Par'])
+    resultado['Ímpar'] = sum([1 for n in lista_master if df[df['Número'] == n]['Par/Ímpar'].values[0] == 'Ímpar'])
 
     # Dúzias
-    resultado['D1'] = (df_filtrado['Dúzia'] == 'D1').sum()
-    resultado['D2'] = (df_filtrado['Dúzia'] == 'D2').sum()
-    resultado['D3'] = (df_filtrado['Dúzia'] == 'D3').sum()
-    resultado['Zero'] = (df_filtrado['Dúzia'] == 'ZERO').sum()  # Adiciona zero na análise
+    resultado['D1'] = sum([1 for n in lista_master if df[df['Número'] == n]['Dúzia'].values[0] == 'D1'])
+    resultado['D2'] = sum([1 for n in lista_master if df[df['Número'] == n]['Dúzia'].values[0] == 'D2'])
+    resultado['D3'] = sum([1 for n in lista_master if df[df['Número'] == n]['Dúzia'].values[0] == 'D3'])
+    resultado['Zero'] = sum([1 for n in lista_master if df[df['Número'] == n]['Dúzia'].values[0] == 'ZERO'])
 
     # Colunas
-    resultado['C1'] = (df_filtrado['Coluna'] == 'C1').sum()
-    resultado['C2'] = (df_filtrado['Coluna'] == 'C2').sum()
-    resultado['C3'] = (df_filtrado['Coluna'] == 'C3').sum()
-    resultado['Coluna Zero'] = (df_filtrado['Coluna'] == 'ZERO').sum()  # Adiciona zero na análise
+    resultado['C1'] = sum([1 for n in lista_master if df[df['Número'] == n]['Coluna'].values[0] == 'C1'])
+    resultado['C2'] = sum([1 for n in lista_master if df[df['Número'] == n]['Coluna'].values[0] == 'C2'])
+    resultado['C3'] = sum([1 for n in lista_master if df[df['Número'] == n]['Coluna'].values[0] == 'C3'])
+    resultado['Coluna Zero'] = sum([1 for n in lista_master if df[df['Número'] == n]['Coluna'].values[0] == 'ZERO'])
 
     # Seção
-    resultado['Seção Zero'] = (df_filtrado['Seção'] == 'ZERO').sum()
-    resultado['Seção Voisin'] = (df_filtrado['Seção'] == 'Voisin').sum()
-    resultado['Seção Orphelins'] = (df_filtrado['Seção'] == 'Orphelins').sum()
-    resultado['Seção Tier'] = (df_filtrado['Seção'] == 'Tier').sum()
+    resultado['Seção Zero'] = sum([1 for n in lista_master if df[df['Número'] == n]['Seção'].values[0] == 'ZERO'])
+    resultado['Seção Voisin'] = sum([1 for n in lista_master if df[df['Número'] == n]['Seção'].values[0] == 'Voisin'])
+    resultado['Seção Orphelins'] = sum([1 for n in lista_master if df[df['Número'] == n]['Seção'].values[0] == 'Orphelins'])
+    resultado['Seção Tier'] = sum([1 for n in lista_master if df[df['Número'] == n]['Seção'].values[0] == 'Tier'])
 
     # Tipo
-    resultado['Tipo Zero'] = (df_filtrado['Tipo'] == 'ZERO').sum()
-    resultado['Separado'] = (df_filtrado['Tipo'] == 'Separado').sum()
-    resultado['Junto'] = (df_filtrado['Tipo'] == 'Junto').sum()
+    resultado['Tipo Zero'] = sum([1 for n in lista_master if df[df['Número'] == n]['Tipo'].values[0] == 'ZERO'])
+    resultado['Separado'] = sum([1 for n in lista_master if df[df['Número'] == n]['Tipo'].values[0] == 'Separado'])
+    resultado['Junto'] = sum([1 for n in lista_master if df[df['Número'] == n]['Tipo'].values[0] == 'Junto'])
 
     # Terminais
     for i in range(10):
-        resultado[f'Term {i}'] = (df_filtrado['Terminal'] == str(i)).sum()
+        resultado[f'Term {i}'] = sum([1 for n in lista_master if df[df['Número'] == n]['Terminal'].values[0] == str(i)])
 
     # Totais separados por categoria
     totais = {
@@ -252,7 +251,7 @@ def aplicar_112233():
 
 # Inicializa variáveis no session_state
 if 'lista_master' not in st.session_state:
-    st.session_state['lista_master'] = ""
+    st.session_state['lista_master'] = []
 
 if 'circulados' not in st.session_state:
     st.session_state['circulados'] = {}
@@ -266,9 +265,9 @@ if 'resultado' not in st.session_state:
 def adicionar_numeros(novo_numero_input):
     try:
         novos_numeros = tratar_lista_master(novo_numero_input)
-        lista_master = tratar_lista_master(st.session_state['lista_master'])
+        lista_master = st.session_state['lista_master']
         lista_master = novos_numeros + lista_master  # Adiciona os novos números no início da lista master
-        st.session_state['lista_master'] = ', '.join(map(str, lista_master))  # Atualiza a lista master
+        st.session_state['lista_master'] = lista_master  # Atualiza a lista master
         st.session_state['novo_numero'] = ""  # Limpa o campo de entrada
         # Chama a função para analisar automaticamente após a adição
         st.session_state['resultado'], st.session_state['totais'] = analisar_roleta(lista_master)
@@ -285,7 +284,7 @@ novo_numero_input = st.text_input(
 
 # Exibe imagens após adicionar números
 if st.session_state['lista_master']:
-    lista_master = tratar_lista_master(st.session_state['lista_master'])
+    lista_master = st.session_state['lista_master']
     exibir_imagens(lista_master)
 
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
@@ -414,5 +413,5 @@ with col_direita:
     # Exibe o Painel de Resultados
     st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
     if st.session_state['lista_master']:
-        lista_master = tratar_lista_master(st.session_state['lista_master'])
+        lista_master = st.session_state['lista_master']
         st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
