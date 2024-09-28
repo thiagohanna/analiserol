@@ -373,11 +373,11 @@ if 'legenda' not in st.session_state:
 if st.session_state['legenda']:
     st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
 
-# Linha de botões dividida em três linhas
-st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
-
 # Coluna da direita - Apresentar a "Painel de resultados" e os botões
 with col_direita:
+
+# Linha de botões dividida em três linhas
+st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
     # Botões de atributos
 col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
