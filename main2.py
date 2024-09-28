@@ -503,8 +503,3 @@ with col25:
     if st.button("Term 9"):
         aplicar_terminal([9,19,9], [14,31,22,18,21,4,15,32,7,28])
         st.session_state['legenda'] = "Numeros: 9,19,9 (+2v)"
-
-# Exibe o Painel de Resultados
-if st.session_state['lista_master']:
-    lista_master = st.session_state['lista_master']
-    st.markdown(formatar_lista_master(lista_master, st.session_state['circulados']), unsafe_allow_html=True)
