@@ -45,7 +45,7 @@ image_links = {
     22: 'https://iili.io/dQoYXCG.png',
     23: 'https://iili.io/dQoYVQs.png',
     24: 'https://iili.io/dQoYMjn.png',
-    25: 'https://iili.io/dQoYGTX.png',  
+    25: 'https://iili.io/dQoYGTX.png',
     26: 'https://iili.io/dQoY1pt.png',
     27: 'https://iili.io/dQoY0vI.png',
     28: 'https://iili.io/dQoYlYN.png',
@@ -264,27 +264,23 @@ def aplicar_filtro_term(alto=True):
         if numero not in numeros_escuros:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
-# Inicializa variáveis no session_state
-if 'botao_term_0' not in st.session_state:
-    st.session_state['botao_term_0'] = False
-if 'botao_term_1' not in st.session_state:
-    st.session_state['botao_term_1'] = False
-if 'botao_term_2' not in st.session_state:
-    st.session_state['botao_term_2'] = False
-if 'botao_term_3' not in st.session_state:
-    st.session_state['botao_term_3'] = False
-if 'botao_term_4' not in st.session_state:
-    st.session_state['botao_term_4'] = False
-if 'botao_term_5' not in st.session_state:
-    st.session_state['botao_term_5'] = False
-if 'botao_term_6' not in st.session_state:
-    st.session_state['botao_term_6'] = False
-if 'botao_term_7' not in st.session_state:
-    st.session_state['botao_term_7'] = False
-if 'botao_term_8' not in st.session_state:
-    st.session_state['botao_term_8'] = False
-if 'botao_term_9' not in st.session_state:
-    st.session_state['botao_term_9'] = False
+# Inicializa variáveis no session_state, se não existirem
+if 'lista_master' not in st.session_state:
+    st.session_state['lista_master'] = []
+
+if 'circulados' not in st.session_state:
+    st.session_state['circulados'] = {}
+
+if 'novo_numero' not in st.session_state:
+    st.session_state['novo_numero'] = ""
+
+if 'legenda' not in st.session_state:
+    st.session_state['legenda'] = ""
+
+# Inicializa os botões de Terminais no session_state
+for i in range(10):
+    if f'botao_term_{i}' not in st.session_state:
+        st.session_state[f'botao_term_{i}'] = False
 
 # Adiciona persistência para os resultados da análise
 if 'resultado' not in st.session_state:
@@ -382,7 +378,7 @@ with col_esquerda:
 
 # Coluna da direita - Botões e Painel de Resultados
 with col_direita:
-    st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3>Painel de Resultados</h3><p>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
 
     # Linha de botões
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
