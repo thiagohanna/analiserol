@@ -4,6 +4,31 @@ import streamlit as st
 # Configura a largura da página
 st.set_page_config(layout="wide")
 
+# Adiciona CSS para ajustar espaçamento e margens
+st.markdown("""
+    <style>
+        /* Remove margem/padding entre os blocos da esquerda e da direita */
+        .css-1kyxreq {  /* Classe para colunas do Streamlit */
+            gap: 10px;  /* Ajuste este valor para aumentar ou diminuir o espaçamento */
+        }
+        
+        /* Ajusta o layout dos blocos de análise de resultados */
+        .css-1r6slb0 {  /* Classe para a área de análise de resultados */
+            margin-bottom: 0px;  /* Diminui o espaçamento abaixo das colunas de análise */
+        }
+
+        /* Ajusta o painel de resultados para ficar mais perto dos botões */
+        .css-1aumxhk {  /* Classe para a área de botões */
+            margin-top: 0px;
+        }
+        
+        /* Ajusta o tamanho da fonte das legendas */
+        .css-1aumxhk p {
+            font-size: 12px; /* Ajuste para o tamanho de fonte desejado */
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Base de dados atualizada
 data = {
     'Número': list(range(37)),
