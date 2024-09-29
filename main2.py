@@ -7,24 +7,32 @@ st.set_page_config(layout="wide")
 # Adiciona CSS para ajustar espaçamento e margens
 st.markdown("""
     <style>
-        /* Remove margem/padding entre os blocos da esquerda e da direita */
-        .css-1kyxreq {  /* Classe para colunas do Streamlit */
-            gap: 10px;  /* Ajuste este valor para aumentar ou diminuir o espaçamento */
-        }
-        
-        /* Ajusta o layout dos blocos de análise de resultados */
-        .css-1r6slb0 {  /* Classe para a área de análise de resultados */
-            margin-bottom: 0px;  /* Diminui o espaçamento abaixo das colunas de análise */
+        /* Remove espaçamento entre as colunas */
+        .block-container {
+            padding: 1rem; /* Ajusta o padding geral da página */
         }
 
-        /* Ajusta o painel de resultados para ficar mais perto dos botões */
-        .css-1aumxhk {  /* Classe para a área de botões */
+        /* Ajusta as colunas para que ocupem mais espaço lateralmente */
+        div[data-testid="column"] {
+            margin-left: 0rem;
+            margin-right: 0rem;
+            padding: 0rem;
+        }
+
+        /* Ajusta o espaçamento dos botões e do painel de resultados */
+        .stButton > button {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        /* Ajusta o painel de resultados para que fique abaixo dos botões */
+        .css-1aumxhk {
             margin-top: 0px;
         }
-        
-        /* Ajusta o tamanho da fonte das legendas */
-        .css-1aumxhk p {
-            font-size: 16px; /* Ajuste para o tamanho de fonte desejado */
+
+        /* Remove margens adicionais entre as colunas */
+        .css-1kyxreq {
+            gap: 0px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -332,7 +340,7 @@ if st.session_state['lista_master']:
     exibir_imagens(lista_master)
 
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
-col_esquerda, col_direita = st.columns([0.5, 0.5])
+col_esquerda, col_direita = st.columns([0.55, 0.45])
 
 # Coluna da direita - Painel de Resultados e botões
 with col_direita:
