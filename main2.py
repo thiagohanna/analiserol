@@ -154,7 +154,7 @@ def formatar_lista_master(lista_master, circulados={}):
         formatted_numbers.append(f"<td style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
 
     linhas = ['<tr>' + ''.join(formatted_numbers[i:i+10]) + '</tr>' for i in range(0, len(formatted_numbers), 10)]
-    return '<table style="width:100%; table-layout:fixed;">' + ''.join(linhas) + '</table>'
+    return '<table style="width:100%">' + ''.join(linhas) + '</table>'
 
 # Função para análise de números
 def analisar_roleta(lista_master):
