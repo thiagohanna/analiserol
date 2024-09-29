@@ -34,6 +34,11 @@ st.markdown("""
         .css-1kyxreq {
             gap: 0px;
         }
+
+        /* Ajusta largura das colunas para encaixar perfeitamente */
+        [data-testid="stHorizontalBlock"] {
+            width: 100% !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -78,7 +83,7 @@ image_links = {
     22: 'https://iili.io/dQoYXCG.png',
     23: 'https://iili.io/dQoYVQs.png',
     24: 'https://iili.io/dQoYMjn.png',
-    25: 'https://iili.io/dQoYGTX.png',  
+    25: 'https://iili.io/dQoYGTX.png',
     26: 'https://iili.io/dQoY1pt.png',
     27: 'https://iili.io/dQoY0vI.png',
     28: 'https://iili.io/dQoYlYN.png',
@@ -162,7 +167,7 @@ def formatar_lista_master(lista_master, circulados={}):
         formatted_numbers.append(f"<td style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
 
     linhas = ['<tr>' + ''.join(formatted_numbers[i:i+10]) + '</tr>' for i in range(0, len(formatted_numbers), 10)]
-    return '<table style="width:100%">' + ''.join(linhas) + '</table>'
+    return '<table style="width:100%; table-layout:fixed;">' + ''.join(linhas) + '</table>'
 
 # Função para análise de números
 def analisar_roleta(lista_master):
@@ -279,7 +284,7 @@ def aplicar_112233():
     for numero in numeros_verde_claro:
         st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
     for numero in range(37):
-        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
+        if numero not in numeros_verde_escuro e not in numeros_verde_claro:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
 # Função para aplicar filtro Term Alto e Term Baixo
@@ -334,17 +339,17 @@ novo_numero_input = st.text_input(
     on_change=lambda: adicionar_numeros(st.session_state['novo_numero'])
 )
 
-# Exibe imagens após adicionar números
-if st.session_state['lista_master']:
-    lista_master = st.session_state['lista_master']
-    exibir_imagens(lista_master)
-
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
-col_esquerda, col_direita = st.columns([0.55, 0.45])
+col_esquerda, col_direita = st.columns([0.5, 0.5])
 
 # Coluna da direita - Painel de Resultados e botões
 with col_direita:
     st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
+
+    # Exibe imagens após adicionar números
+    if st.session_state['lista_master']:
+        lista_master = st.session_state['lista_master']
+        exibir_imagens(lista_master)
 
     # Linha de botões dividida em três linhas
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
@@ -400,13 +405,11 @@ with col_direita:
     with col10:
         if st.button("Term Alto"):
             aplicar_filtro_term(alto=True)
-            st.session_state['legenda'] = "Terminados em: 6,7,8,9"
-            
+
     with col11:
         if st.button("Term Baixo"):
             aplicar_filtro_term(alto=False)
-            st.session_state['legenda'] = "Terminados em: 0,1,2,3,4,5"
-            
+
     with col12:
         if st.button("Term 1-9"):
             aplicar_terminal([1,2,3,4,5,6,7,8,9], [])
@@ -426,7 +429,7 @@ with col_direita:
         if st.button("Term 30-36"):
             aplicar_terminal([30,31,32,33,34,35,36], [])
             st.session_state['legenda'] = "Numeros: 30,31,32,33,34,35,36"
-        
+
     # Terceira linha de botões
     with col16:
         if st.button("Term 0"):
@@ -470,7 +473,7 @@ with col_direita:
 
     with col24:
         if st.button("Term 8"):
-            aplicar_terminal([8,19,28], [10,23,30,11,9,22,29,7,12,35])
+            aplicar_terminal([8,18,28], [10,23,30,11,9,22,29,7,12,35])
             st.session_state['legenda'] = "Numeros: 8,19,28 (+2v)"
 
     with col25:
@@ -480,7 +483,11 @@ with col_direita:
 
     # Exibe a legenda se houver
     if st.session_state['legenda']:
-        st.markdown(f"<p style='font-size:16px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
+
+    # Exibe a lista formatada
+    if st.session_state['lista_master']:
+        st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True)
 
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
@@ -540,7 +547,3 @@ with col_esquerda:
             for i in range(10):
                 bg_color, font_color = cores['Terminal'][str(i)]
                 st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
-
-# Exibe a lista formatada
-if st.session_state['lista_master']:
-    st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True) 
