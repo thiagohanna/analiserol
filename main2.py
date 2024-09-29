@@ -24,7 +24,7 @@ st.markdown("""
         
         /* Ajusta o tamanho da fonte das legendas */
         .css-1aumxhk p {
-            font-size: 12px; /* Ajuste para o tamanho de fonte desejado */
+            font-size: 16px; /* Ajuste para o tamanho de fonte desejado */
         }
     </style>
 """, unsafe_allow_html=True)
@@ -332,7 +332,7 @@ if st.session_state['lista_master']:
     exibir_imagens(lista_master)
 
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
-col_esquerda, col_direita = st.columns([0.6, 0.4])
+col_esquerda, col_direita = st.columns([0.5, 0.5])
 
 # Coluna da direita - Painel de Resultados e botões
 with col_direita:
@@ -470,7 +470,7 @@ with col_direita:
 
     # Exibe a legenda se houver
     if st.session_state['legenda']:
-        st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:16px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
 
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
