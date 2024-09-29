@@ -45,7 +45,7 @@ image_links = {
     22: 'https://iili.io/dQoYXCG.png',
     23: 'https://iili.io/dQoYVQs.png',
     24: 'https://iili.io/dQoYMjn.png',
-    25: 'https://iili.io/dQoYGTX.png',
+    25: 'https://iili.io/dQoYGTX.png',  
     26: 'https://iili.io/dQoY1pt.png',
     27: 'https://iili.io/dQoY0vI.png',
     28: 'https://iili.io/dQoYlYN.png',
@@ -271,6 +271,10 @@ if 'lista_master' not in st.session_state:
 if 'circulados' not in st.session_state:
     st.session_state['circulados'] = {}
 
+# Inicializa a variável 'legenda' se não estiver no session_state
+if 'legenda' not in st.session_state:
+    st.session_state['legenda'] = ""
+
 # Adiciona persistência para os resultados da análise
 if 'resultado' not in st.session_state:
     st.session_state['resultado'] = None
@@ -302,72 +306,14 @@ if st.session_state['lista_master']:
     lista_master = st.session_state['lista_master']
     exibir_imagens(lista_master)
 
-# Organizando o layout com duas colunas: esquerda para a tabela de resultados e direita para o painel de botões
-col_esquerda, col_direita = st.columns([0.6, 0.4])  # 60% para a análise, 40% para os botões
+# Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
+col_esquerda, col_direita = st.columns([0.6, 0.4])
 
-# Coluna da esquerda - Apresentar resultados do "Analisar Números"
-with col_esquerda:
-    if st.session_state['resultado'] and st.session_state['totais']:
-        resultado = st.session_state['resultado']
-        totais = st.session_state['totais']
-
-        # Exibe os resultados organizados em 7 colunas
-        st.markdown("### Tabela de análise de resultados")  # Título da tabela
-        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-
-        # Função para criar células de apresentação
-        def create_cell(label, quantidade, percentual, background_color, font_color="black"):
-            return f"<div style='background-color:{background_color}; padding:10px; color:{font_color}; font-size:16px;'>{label}: {quantidade} ({percentual}%)</div>"
-
-        # Dúzias
-        with col1:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Dúzia</strong></div>", unsafe_allow_html=True)
-            st.markdown(create_cell("D1", resultado['D1'], int((resultado['D1'] / totais['Dúzia']) * 100), cores['Dúzia']['D1'][0], cores['Dúzia']['D1'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("D2", resultado['D2'], int((resultado['D2'] / totais['Dúzia']) * 100), cores['Dúzia']['D2'][0], cores['Dúzia']['D2'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("D3", resultado['D3'], int((resultado['D3'] / totais['Dúzia']) * 100), cores['Dúzia']['D3'][0], cores['Dúzia']['D3'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Zero", resultado['Zero'], int((resultado['Zero'] / totais['Dúzia']) * 100), cores['Dúzia']['Zero'][0], cores['Dúzia']['Zero'][1]), unsafe_allow_html=True)
-
-        # Colunas
-        with col2:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Coluna</strong></div>", unsafe_allow_html=True)
-            st.markdown(create_cell("C1", resultado['C1'], int((resultado['C1'] / totais['Coluna']) * 100), cores['Coluna']['C1'][0], cores['Coluna']['C1'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("C2", resultado['C2'], int((resultado['C2'] / totais['Coluna']) * 100), cores['Coluna']['C2'][0], cores['Coluna']['C2'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("C3", resultado['C3'], int((resultado['C3'] / totais['Coluna']) * 100), cores['Coluna']['C3'][0], cores['Coluna']['C3'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Zero", resultado['Coluna Zero'], int((resultado['Coluna Zero'] / totais['Coluna']) * 100), cores['Coluna']['Zero'][0], cores['Coluna']['Zero'][1]), unsafe_allow_html=True)
-
-        # Par/Ímpar
-        with col3:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Par/Ímpar</strong></div>", unsafe_allow_html=True)
-            st.markdown(create_cell("Par", resultado['Par'], int((resultado['Par'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Par'][0], cores['Par/Ímpar']['Par'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Ímpar", resultado['Ímpar'], int((resultado['Ímpar'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Ímpar'][0], cores['Par/Ímpar']['Ímpar'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Zero", resultado['Zero'], int((resultado['Zero'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Zero'][0], cores['Par/Ímpar']['Zero'][1]), unsafe_allow_html=True)
-
-        # Seção
-        with col4:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Seção</strong></div>", unsafe_allow_html=True)
-            st.markdown(create_cell("Zero", resultado['Seção Zero'], int((resultado['Seção Zero'] / totais['Seção']) * 100), cores['Seção']['Zero'][0], cores['Seção']['Zero'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Voisin", resultado['Seção Voisin'], int((resultado['Seção Voisin'] / totais['Seção']) * 100), cores['Seção']['Voisin'][0], cores['Seção']['Voisin'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Orphelins", resultado['Seção Orphelins'], int((resultado['Seção Orphelins'] / totais['Seção']) * 100), cores['Seção']['Orphelins'][0], cores['Seção']['Orphelins'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Tier", resultado['Seção Tier'], int((resultado['Seção Tier'] / totais['Seção']) * 100), cores['Seção']['Tier'][0], cores['Seção']['Tier'][1]), unsafe_allow_html=True)
-
-        # Tipo
-        with col5:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Tipo</strong></div>", unsafe_allow_html=True)
-            st.markdown(create_cell("Zero", resultado['Tipo Zero'], int((resultado['Tipo Zero'] / totais['Tipo']) * 100), cores['Tipo']['Zero'][0], cores['Tipo']['Zero'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Separado", resultado['Separado'], int((resultado['Separado'] / totais['Tipo']) * 100), cores['Tipo']['Separado'][0], cores['Tipo']['Separado'][1]), unsafe_allow_html=True)
-            st.markdown(create_cell("Junto", resultado['Junto'], int((resultado['Junto'] / totais['Tipo']) * 100), cores['Tipo']['Junto'][0], cores['Tipo']['Junto'][1]), unsafe_allow_html=True)
-
-        # Terminais
-        with col6:
-            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Terminal</strong></div>", unsafe_allow_html=True)
-            for i in range(10):
-                bg_color, font_color = cores['Terminal'][str(i)]
-                st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
-
-# Coluna da direita - Painel de Resultados e Botões
+# Coluna da direita - Painel de Resultados e botões
 with col_direita:
     st.markdown("<h3>Painel de Resultados</h3>", unsafe_allow_html=True)
 
+    # Linha de botões dividida em três linhas
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
     col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
@@ -445,7 +391,7 @@ with col_direita:
         if st.button("Term 30-36"):
             aplicar_terminal([30,31,32,33,34,35,36], [])
             st.session_state['legenda'] = "Numeros: 30,31,32,33,34,35,36"
-
+        
     # Terceira linha de botões
     with col16:
         if st.button("Term 0"):
@@ -497,10 +443,69 @@ with col_direita:
             aplicar_terminal([9,19,9], [14,31,22,18,21,4,15,32,7,28])
             st.session_state['legenda'] = "Numeros: 9,19,9 (+2v)"
 
-# Exibe o Painel de Resultados com a legenda, caso exista
-if st.session_state['legenda']:
-    st.markdown(f"<h4>{st.session_state['legenda']}</h4>", unsafe_allow_html=True)
+    # Exibe a legenda se houver
+    if st.session_state['legenda']:
+        st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
 
-# Exibe a lista formatada no final
+# Coluna da esquerda - Apresentar resultados do "Analisar Números"
+with col_esquerda:
+    if st.session_state['resultado'] and st.session_state['totais']:
+        resultado = st.session_state['resultado']
+        totais = st.session_state['totais']
+
+        # Exibe os resultados organizados em 7 colunas
+        st.markdown("### Tabela de análise de resultados")  # Título da tabela
+        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+
+        # Função para criar células de apresentação
+        def create_cell(label, quantidade, percentual, background_color, font_color="black"):
+            return f"<div style='background-color:{background_color}; padding:10px; color:{font_color}; font-size:16px;'>{label}: {quantidade} ({percentual}%)</div>"
+
+        # Dúzias
+        with col1:
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Dúzia</strong></div>", unsafe_allow_html=True)
+            st.markdown(create_cell("D1", resultado['D1'], int((resultado['D1'] / totais['Dúzia']) * 100), cores['Dúzia']['D1'][0], cores['Dúzia']['D1'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("D2", resultado['D2'], int((resultado['D2'] / totais['Dúzia']) * 100), cores['Dúzia']['D2'][0], cores['Dúzia']['D2'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("D3", resultado['D3'], int((resultado['D3'] / totais['Dúzia']) * 100), cores['Dúzia']['D3'][0], cores['Dúzia']['D3'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Zero", resultado['Zero'], int((resultado['Zero'] / totais['Dúzia']) * 100), cores['Dúzia']['Zero'][0], cores['Dúzia']['Zero'][1]), unsafe_allow_html=True)
+
+        # Colunas
+        with col2:
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Coluna</strong></div>", unsafe_allow_html=True)
+            st.markdown(create_cell("C1", resultado['C1'], int((resultado['C1'] / totais['Coluna']) * 100), cores['Coluna']['C1'][0], cores['Coluna']['C1'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("C2", resultado['C2'], int((resultado['C2'] / totais['Coluna']) * 100), cores['Coluna']['C2'][0], cores['Coluna']['C2'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("C3", resultado['C3'], int((resultado['C3'] / totais['Coluna']) * 100), cores['Coluna']['C3'][0], cores['Coluna']['C3'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Zero", resultado['Coluna Zero'], int((resultado['Coluna Zero'] / totais['Coluna']) * 100), cores['Coluna']['Zero'][0], cores['Coluna']['Zero'][1]), unsafe_allow_html=True)
+
+        # Par/Ímpar
+        with col3:
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Par/Ímpar</strong></div>", unsafe_allow_html=True)
+            st.markdown(create_cell("Par", resultado['Par'], int((resultado['Par'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Par'][0], cores['Par/Ímpar']['Par'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Ímpar", resultado['Ímpar'], int((resultado['Ímpar'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Ímpar'][0], cores['Par/Ímpar']['Ímpar'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Zero", resultado['Zero'], int((resultado['Zero'] / totais['Paridade']) * 100), cores['Par/Ímpar']['Zero'][0], cores['Par/Ímpar']['Zero'][1]), unsafe_allow_html=True)
+
+        # Seção
+        with col4:
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Seção</strong></div>", unsafe_allow_html=True)
+            st.markdown(create_cell("Zero", resultado['Seção Zero'], int((resultado['Seção Zero'] / totais['Seção']) * 100), cores['Seção']['Zero'][0], cores['Seção']['Zero'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Voisin", resultado['Seção Voisin'], int((resultado['Seção Voisin'] / totais['Seção']) * 100), cores['Seção']['Voisin'][0], cores['Seção']['Voisin'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Orphelins", resultado['Seção Orphelins'], int((resultado['Seção Orphelins'] / totais['Seção']) * 100), cores['Seção']['Orphelins'][0], cores['Seção']['Orphelins'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Tier", resultado['Seção Tier'], int((resultado['Seção Tier'] / totais['Seção']) * 100), cores['Seção']['Tier'][0], cores['Seção']['Tier'][1]), unsafe_allow_html=True)
+
+        # Tipo
+        with col5:
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Tipo</strong></div>", unsafe_allow_html=True)
+            st.markdown(create_cell("Zero", resultado['Tipo Zero'], int((resultado['Tipo Zero'] / totais['Tipo']) * 100), cores['Tipo']['Zero'][0], cores['Tipo']['Zero'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Separado", resultado['Separado'], int((resultado['Separado'] / totais['Tipo']) * 100), cores['Tipo']['Separado'][0], cores['Tipo']['Separado'][1]), unsafe_allow_html=True)
+            st.markdown(create_cell("Junto", resultado['Junto'], int((resultado['Junto'] / totais['Tipo']) * 100), cores['Tipo']['Junto'][0], cores['Tipo']['Junto'][1]), unsafe_allow_html=True)
+
+        # Terminais
+        with col6:
+            st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Terminal</strong></div>", unsafe_allow_html=True)
+            for i in range(10):
+                bg_color, font_color = cores['Terminal'][str(i)]
+                st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
+
+# Exibe a lista formatada
 if st.session_state['lista_master']:
-    st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True)
+    st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True) 
