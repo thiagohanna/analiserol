@@ -284,7 +284,7 @@ def aplicar_112233():
     for numero in numeros_verde_claro:
         st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
     for numero in range(37):
-        if numero not in numeros_verde_escuro e not in numeros_verde_claro:
+        if numero not in numeros_verde_escuro and not in numeros_verde_claro:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
 # Função para aplicar filtro Term Alto e Term Baixo
