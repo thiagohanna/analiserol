@@ -264,15 +264,6 @@ def aplicar_filtro_term(alto=True):
         if numero not in numeros_escuros:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
-# Função para aplicar o filtro de terminais e atualizar a legenda
-def aplicar_terminal(escuros, claros, legenda):
-    st.session_state['circulados'] = {}
-    for numero in escuros:
-        st.session_state['circulados'][numero] = {'Terminal': ('#00008B', 'white')}  # Azul escuro e letra branca
-    for numero in claros:
-        st.session_state['circulados'][numero] = {'Terminal': ('#ADD8E6', 'black')}  # Azul claro e letra preta
-    st.session_state['legenda'] = legenda  # Atualiza a legenda
-
 # Inicializa variáveis no session_state, se não existirem
 if 'lista_master' not in st.session_state:
     st.session_state['lista_master'] = []
