@@ -400,11 +400,13 @@ with col_direita:
     with col10:
         if st.button("Term Alto"):
             aplicar_filtro_term(alto=True)
-
+            st.session_state['legenda'] = "Terminados em: 6,7,8,9"
+            
     with col11:
         if st.button("Term Baixo"):
             aplicar_filtro_term(alto=False)
-
+            st.session_state['legenda'] = "Terminados em: 0,1,2,3,4,5"
+            
     with col12:
         if st.button("Term 1-9"):
             aplicar_terminal([1,2,3,4,5,6,7,8,9], [])
