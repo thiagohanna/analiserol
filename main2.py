@@ -302,6 +302,39 @@ def aplicar_filtro_term(alto=True):
         if numero not in numeros_escuros:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
+# Função para aplicar nova lógica de terminal + sequência
+def circular_terminais_consecutivos(lista_master):
+    st.session_state['circulados'] = {}
+    if len(lista_master) < 2:
+        return  # Não faz nada se não houver pelo menos dois números
+    
+    for i in range(len(lista_master) - 1):
+        num_atual = lista_master[i]
+        num_prox = lista_master[i + 1]
+        
+        terminal_atual = df[df['Número'] == num_atual]['Terminal'].values[0]
+        terminal_prox = df[df['Número'] == num_prox]['Terminal'].values[0]
+        
+        # Se os terminais forem consecutivos (5 e 0, 6 e 7, etc.)
+        if terminal_atual == '5' and terminal_prox == '0':
+            # Circular os números atuais e próximos
+            if num_atual not in st.session_state['circulados']:
+                st.session_state['circulados'][num_atual] = {}
+            if num_prox not in st.session_state['circulados']:
+                st.session_state['circulados'][num_prox] = {}
+            
+            # Aplica borda vermelha
+            st.session_state['circulados'][num_atual]['Terminal'] = ('#ffffff', '#ff0000')  # Fundo branco, borda vermelha
+            st.session_state['circulados'][num_prox]['Terminal'] = ('#ffffff', '#ff0000')  # Fundo branco, borda vermelha
+
+    # Adiciona lógica para números subsequentes com o mesmo padrão
+    for num in lista_master:
+        terminal = df[df['Número'] == num]['Terminal'].values[0]
+        if terminal == '5' or terminal == '0':
+            if num not in st.session_state['circulados']:
+                st.session_state['circulados'][num] = {}
+            st.session_state['circulados'][num]['Terminal'] = ('#ffffff', '#ff0000')  # Fundo branco, borda vermelha
+
 # Inicializa variáveis no session_state
 if 'lista_master' not in st.session_state:
     st.session_state['lista_master'] = []
@@ -328,6 +361,8 @@ def adicionar_numeros(novo_numero_input):
         st.session_state['novo_numero'] = ""  # Limpa o campo de entrada
         # Chama a função para analisar automaticamente após a adição
         st.session_state['resultado'], st.session_state['totais'] = analisar_roleta(lista_master)
+        # Aplica a nova lógica de terminais consecutivos
+        circular_terminais_consecutivos(lista_master)
     except ValueError:
         st.error("Por favor, insira números válidos.")
 
@@ -546,4 +581,5 @@ with col_esquerda:
             st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Terminal</strong></div>", unsafe_allow_html=True)
             for i in range(10):
                 bg_color, font_color = cores['Terminal'][str(i)]
-                st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
+                st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True) 
+
