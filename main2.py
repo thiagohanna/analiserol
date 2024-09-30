@@ -61,6 +61,47 @@ data = {
 
 df = pd.DataFrame(data)
 
+# Definindo os links de imagem associados a cada número
+image_links = {
+    0: 'https://iili.io/dQoa96v.png',
+    1: 'https://iili.io/dQoYyMJ.png',
+    2: 'https://iili.io/dQoYpna.png',
+    3: 'https://iili.io/dQoYbZg.png',
+    4: 'https://iili.io/dQoYDwF.png',
+    5: 'https://iili.io/dQoYtu1.png',
+    6: 'https://iili.io/dQoYQyP.png',
+    7: 'https://iili.io/dQoYL8B.png',
+    8: 'https://iili.io/dQoYsaV.png',
+    9: 'https://iili.io/dQoYi3Q.png',
+    10: 'https://iili.io/dQoY66x.png',
+    11: 'https://iili.io/dQoY4Gj.png',
+    12: 'https://iili.io/dQoYrCb.png',
+    13: 'https://iili.io/dQoYUZu.png',
+    14: 'https://iili.io/dQoYSje.png',
+    15: 'https://iili.io/dQoY8u9.png',
+    16: 'https://iili.io/dQoYky7.png',
+    17: 'https://iili.io/dQoYevS.png',
+    18: 'https://iili.io/dQoYOa2.png',
+    19: 'https://iili.io/dQoYN3l.png',
+    20: 'https://iili.io/dQoYj44.png',
+    21: 'https://iili.io/dQoYhGf.png',
+    22: 'https://iili.io/dQoYXCG.png',
+    23: 'https://iili.io/dQoYVQs.png',
+    24: 'https://iili.io/dQoYMjn.png',
+    25: 'https://iili.io/dQoYGTX.png',
+    26: 'https://iili.io/dQoY1pt.png',
+    27: 'https://iili.io/dQoY0vI.png',
+    28: 'https://iili.io/dQoYlYN.png',
+    29: 'https://iili.io/dQoYY4R.png',
+    30: 'https://iili.io/dQoY7Ev.png',
+    31: 'https://iili.io/dQoY5CJ.png',
+    32: 'https://iili.io/dQoYAQa.png',
+    33: 'https://iili.io/dQoYzp1.png',
+    34: 'https://iili.io/dQoYxkP.png',
+    35: 'https://iili.io/dQoYTTF.png',
+    36: 'https://iili.io/dQoYuhg.png'
+}
+
 # Dicionário de cores e fontes para cada atributo
 cores = {
     'Par/Ímpar': {
