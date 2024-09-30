@@ -4,7 +4,7 @@ import streamlit as st
 # Configura a largura da página
 st.set_page_config(layout="wide")
 
-# Adiciona CSS para ajustar espaçamento, margens e contorno vermelho
+# Adiciona CSS para ajustar espaçamento e margens
 st.markdown("""
     <style>
         /* Remove espaçamento entre as colunas */
@@ -38,11 +38,6 @@ st.markdown("""
         /* Ajusta largura das colunas para encaixar perfeitamente */
         [data-testid="stHorizontalBlock"] {
             width: 100% !important;
-        }
-
-        /* Contorno vermelho nas células */
-        .contorno-vermelho {
-            border: 2px solid red !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -158,20 +153,18 @@ def tratar_lista_master(texto):
     lista = [int(n) for n in lista if n.isdigit() and 0 <= int(n) <= 36]  # Filtra apenas números válidos (0-36)
     return lista  # Mantém os números duplicados
 
-# Função para formatar a lista master com contornos vermelhos
-def formatar_lista_master(lista_master, terminais_primeiros_dois):
+# Função para formatar a lista master
+def formatar_lista_master(lista_master, circulados={}):
     formatted_numbers = []
-    for i, numero in enumerate(lista_master):
+    for numero in lista_master:
         row = df[df['Número'] == numero].iloc[0]
         bg_color, text_color = cores['Par/Ímpar']['Zero'] if numero == 0 else cores['Cor'][row['Cor']]
-
-        # Adiciona contorno vermelho nas duas primeiras células e nos números com o mesmo terminal
-        if i < 2 or (i > 1 and row['Terminal'] in terminais_primeiros_dois and i > 0 and lista_master[i - 1] in lista_master[:2]):
-            extra_class = 'contorno-vermelho'
-        else:
-            extra_class = ''
-
-        formatted_numbers.append(f"<td class='{extra_class}' style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
+        
+        if numero in circulados:
+            for attr, color in circulados[numero].items():
+                bg_color, text_color = color
+        
+        formatted_numbers.append(f"<td style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
 
     linhas = ['<tr>' + ''.join(formatted_numbers[i:i+10]) + '</tr>' for i in range(0, len(formatted_numbers), 10)]
     return '<table style="width:100%; table-layout:fixed;">' + ''.join(linhas) + '</table>'
@@ -248,6 +241,83 @@ def exibir_imagens(lista_master):
         else:
             cols[i].write(f"Imagem não disponível para {num}")
 
+# Função para circular números por atributo
+def circular_atributo(coluna, grupo, cores):
+    st.session_state['circulados'] = {}
+    df_atributo = df[df[coluna].isin(grupo)]
+    for _, row in df_atributo.iterrows():
+        if row['Número'] not in st.session_state['circulados']:
+            st.session_state['circulados'][row['Número']] = {}
+        st.session_state['circulados'][row['Número']][coluna] = cores[row[coluna]]
+
+# Função para aplicar filtro do botão de terminal
+def aplicar_terminal(escuros, claros):
+    st.session_state['circulados'] = {}
+    for numero in escuros:
+        st.session_state['circulados'][numero] = {'Terminal': ('#00008B', 'white')}  # Azul escuro e letra branca
+    for numero in claros:
+        st.session_state['circulados'][numero] = {'Terminal': ('#ADD8E6', 'black')}  # Azul claro e letra preta
+    for numero in range(37):
+        if numero not in escuros and numero not in claros:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
+# Função para aplicar filtro do botão "Espelho +1v"
+def aplicar_espelho():
+    st.session_state['circulados'] = {}
+    numeros_verde_escuro = [12, 21, 32, 23, 13, 31]
+    numeros_verde_claro = [0, 2, 4, 8, 9, 10, 14, 15, 26, 28, 35, 36]
+    for numero in numeros_verde_escuro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#006400', 'white')}  # Verde escuro e letra branca
+    for numero in numeros_verde_claro:
+        st.session_state['circulados'][numero] = {'Espelho +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
+    for numero in range(37):
+        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
+# Função para aplicar filtro do botão "11-22-33 +1v"
+def aplicar_112233():
+    st.session_state['circulados'] = {}
+    numeros_verde_escuro = [11, 22, 33, 0]
+    numeros_verde_claro = [26, 32, 36, 30, 9, 18, 1, 16]
+    for numero in numeros_verde_escuro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#006400', 'white')}  # Verde escuro e letra branca
+    for numero in numeros_verde_claro:
+        st.session_state['circulados'][numero] = {'11-22-33 +1v': ('#90EE90', 'black')}  # Verde claro e letra preta
+    for numero in range(37):
+        if numero not in numeros_verde_escuro and numero not in numeros_verde_claro:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
+# Função para aplicar filtro Term Alto e Term Baixo
+def aplicar_filtro_term(alto=True):
+    st.session_state['circulados'] = {}
+    if alto:
+        numeros_escuros = [6,16,26,36,7,17,27,8,18,28,9,19,29]
+        st.session_state['legenda'] = "Numeros: 6,16,26,36,7,17,27,8,18,28,9,19,29"
+    else:
+        numeros_escuros = [0,10,20,30,1,11,21,31,2,12,22,32,3,13,23,33,4,14,24,34,5,25,35]
+        st.session_state['legenda'] = "Numeros: 0,10,20,30,1,11,21,31,2,12,22,32,3,13,23,33,4,14,24,34,5,25,35"
+    for numero in numeros_escuros:
+        st.session_state['circulados'][numero] = {'Terminal': ('#00008B', 'white')}  # Azul escuro e letra branca
+    for numero in range(37):
+        if numero not in numeros_escuros:
+            st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
+
+# Inicializa variáveis no session_state
+if 'lista_master' not in st.session_state:
+    st.session_state['lista_master'] = []
+
+if 'circulados' not in st.session_state:
+    st.session_state['circulados'] = {}
+
+# Inicializa a variável 'legenda' se não estiver no session_state
+if 'legenda' not in st.session_state:
+    st.session_state['legenda'] = ""
+
+# Adiciona persistência para os resultados da análise
+if 'resultado' not in st.session_state:
+    st.session_state['resultado'] = None
+    st.session_state['totais'] = None
+
 # Função para adicionar números ao pressionar "Enter"
 def adicionar_numeros(novo_numero_input):
     try:
@@ -261,18 +331,6 @@ def adicionar_numeros(novo_numero_input):
     except ValueError:
         st.error("Por favor, insira números válidos.")
 
-# Inicializa variáveis no session_state
-if 'lista_master' not in st.session_state:
-    st.session_state['lista_master'] = []
-
-if 'circulados' not in st.session_state:
-    st.session_state['circulados'] = {}
-
-# Adiciona persistência para os resultados da análise
-if 'resultado' not in st.session_state:
-    st.session_state['resultado'] = None
-    st.session_state['totais'] = None
-
 # Campo para adicionar novos números (ao pressionar Enter)
 novo_numero_input = st.text_input(
     "Adicionar novos números à lista (cole múltiplos números separados por vírgula ou espaço)",
@@ -280,14 +338,6 @@ novo_numero_input = st.text_input(
     key="novo_numero",
     on_change=lambda: adicionar_numeros(st.session_state['novo_numero'])
 )
-
-# Obtendo os dois primeiros números e seus terminais
-if st.session_state['lista_master']:
-    primeiros_dois_numeros = st.session_state['lista_master'][:2]
-    terminais_primeiros_dois = [df[df['Número'] == n].iloc[0]['Terminal'] for n in primeiros_dois_numeros]
-else:
-    primeiros_dois_numeros = []
-    terminais_primeiros_dois = []
 
 # Linha abaixo das imagens dividida em duas colunas (esquerda e direita)
 col_esquerda, col_direita = st.columns([0.5, 0.5])
@@ -301,40 +351,143 @@ with col_direita:
         lista_master = st.session_state['lista_master']
         exibir_imagens(lista_master)
 
-    # Exibe a lista formatada com os contornos vermelhos
-    if st.session_state['lista_master']:
-        st.markdown(formatar_lista_master(st.session_state['lista_master'], terminais_primeiros_dois), unsafe_allow_html=True)
-
-    # Botões para funcionalidades adicionais
+    # Linha de botões dividida em três linhas
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+    col8, col9, col10, col11, col12, col13, col14, col15 = st.columns(8)
+    col16, col17, col18, col19, col20, col21, col22, col23, col24, col25 = st.columns(10)
 
     with col1:
         if st.button("Cor"):
-            st.write("Função não implementada para este botão ainda.")
+            circular_atributo('Cor', ['Vermelho', 'Preto'], {'Vermelho': cores['Cor']['Vermelho'], 'Preto': cores['Cor']['Preto']})
+            st.session_state['legenda'] = ""
 
     with col2:
         if st.button("Par/Ímpar"):
-            st.write("Função não implementada para este botão ainda.")
+            circular_atributo('Par/Ímpar', ['Par', 'Ímpar'], {'Par': cores['Par/Ímpar']['Par'], 'Ímpar': cores['Par/Ímpar']['Ímpar']})
+            st.session_state['legenda'] = ""
 
     with col3:
         if st.button("Dúzia"):
-            st.write("Função não implementada para este botão ainda.")
+            circular_atributo('Dúzia', ['D1', 'D2', 'D3'], {'D1': cores['Dúzia']['D1'], 'D2': cores['Dúzia']['D2'], 'D3': cores['Dúzia']['D3']})
+            st.session_state['legenda'] = ""
 
     with col4:
         if st.button("Coluna"):
-            st.write("Função não implementada para este botão ainda.")
+            circular_atributo('Coluna', ['C1', 'C2', 'C3'], {'C1': cores['Coluna']['C1'], 'C2': cores['Coluna']['C2'], 'C3': cores['Coluna']['C3']})
+            st.session_state['legenda'] = ""
 
     with col5:
         if st.button("Seção"):
-            st.write("Função não implementada para este botão ainda.")
+            circular_atributo('Seção', ['Zero', 'Voisin', 'Orphelins', 'Tier'], {'Zero': cores['Seção']['Zero'], 'Voisin': cores['Seção']['Voisin'], 'Orphelins': cores['Seção']['Orphelins'], 'Tier': cores['Seção']['Tier']})
+            st.session_state['legenda'] = ""
 
     with col6:
         if st.button("Tipo"):
-            st.write("Função não implementada para este botão ainda.")
+            circular_atributo('Tipo', ['Separado', 'Junto'], {'Separado': cores['Tipo']['Separado'], 'Junto': cores['Tipo']['Junto']})
+            st.session_state['legenda'] = ""
 
     with col7:
         if st.button("Terminal"):
-            st.write("Função não implementada para este botão ainda.")
+            circular_atributo('Terminal', [str(i) for i in range(10)], cores['Terminal'])
+            st.session_state['legenda'] = ""
+
+    # Segunda linha de botões
+    with col8:
+        if st.button("Espelho +1v"):
+            aplicar_espelho()
+            st.session_state['legenda'] = "Numeros: 12,21,32,23,13,31 (+1v)"
+
+    with col9:
+        if st.button("11-22-33 +1v"):
+            aplicar_112233()
+            st.session_state['legenda'] = "Numeros: 11,22,33,0 (+1v)"
+
+    with col10:
+        if st.button("Term Alto"):
+            aplicar_filtro_term(alto=True)
+
+    with col11:
+        if st.button("Term Baixo"):
+            aplicar_filtro_term(alto=False)
+
+    with col12:
+        if st.button("Term 1-9"):
+            aplicar_terminal([1,2,3,4,5,6,7,8,9], [])
+            st.session_state['legenda'] = "Numeros: 1,2,3,4,5,6,7,8,9"
+
+    with col13:
+        if st.button("Term 10-19"):
+            aplicar_terminal([10,11,12,13,14,15,16,17,18,19], [])
+            st.session_state['legenda'] = "Numeros: 10,11,12,13,14,15,16,17,18,19"
+
+    with col14:
+        if st.button("Term 20-29"):
+            aplicar_terminal([20,21,22,23,24,25,26,27,28,29], [])
+            st.session_state['legenda'] = "Numeros: 20,21,22,23,24,25,26,27,28,29"
+
+    with col15:
+        if st.button("Term 30-36"):
+            aplicar_terminal([30,31,32,33,34,35,36], [])
+            st.session_state['legenda'] = "Numeros: 30,31,32,33,34,35,36"
+
+    # Terceira linha de botões
+    with col16:
+        if st.button("Term 0"):
+            aplicar_terminal([0,10,20,30], [3,26,32,15,24,5,23,8,33,1,14,31,11,36])
+            st.session_state['legenda'] = "Numeros: 0,10,20,30 (+2v)"
+
+    with col17:
+        if st.button("Term 1"):
+            aplicar_terminal([1,11,21,31], [16,33,20,14,8,30,36,13,25,2,4,19,9,22])
+            st.session_state['legenda'] = "Numeros: 1,11,21,31 (+2v)"
+
+    with col18:
+        if st.button("Term 2"):
+            aplicar_terminal([2,12,22,32], [17,25,21,4,7,28,35,3,31,9,18,29,26,0,19,15])
+            st.session_state['legenda'] = "Numeros: 2,12,22,32 (+2v)"
+
+    with col19:
+        if st.button("Term 3"):
+            aplicar_terminal([3,13,23,33], [12,35,26,0,11,36,27,6,5,10,8,30,24,16,1,20])
+            st.session_state['legenda'] = "Numeros: 3,13,23,33 (+2v)"
+
+    with col20:
+        if st.button("Term 4"):
+            aplicar_terminal([4,14,24,34], [2,21,19,15,1,20,31,9,10,5,16,33,27,6,17,25])
+            st.session_state['legenda'] = "Numeros: 4,14,24,34 (+2v)"
+
+    with col21:
+        if st.button("Term 5"):
+            aplicar_terminal([5,15,25,35], [23,10,24,16,4,19,32,0,34,17,2,21,28,12,3,26])
+            st.session_state['legenda'] = "Numeros: 5,15,25,35 (+2v)"
+
+    with col22:
+        if st.button("Term 6"):
+            aplicar_terminal([6,16,26,36], [13,27,34,17,5,24,33,1,35,3,0,32,30,11])
+            st.session_state['legenda'] = "Numeros: 6,16,26,36 (+2v)"
+
+    with col23:
+        if st.button("Term 7"):
+            aplicar_terminal([7,17,27], [18,29,28,12,6,34,25,2,36,13])
+            st.session_state['legenda'] = "Numeros: 7,17,27 (+2v)"
+
+    with col24:
+        if st.button("Term 8"):
+            aplicar_terminal([8,18,28], [10,23,30,11,9,22,29,7,12,35])
+            st.session_state['legenda'] = "Numeros: 8,19,28 (+2v)"
+
+    with col25:
+        if st.button("Term 9"):
+            aplicar_terminal([9,19,9], [14,31,22,18,21,4,15,32,7,28])
+            st.session_state['legenda'] = "Numeros: 9,19,9 (+2v)"
+
+    # Exibe a legenda se houver
+    if st.session_state['legenda']:
+        st.markdown(f"<p style='font-size:14px'>{st.session_state['legenda']}</p>", unsafe_allow_html=True)
+
+    # Exibe a lista formatada
+    if st.session_state['lista_master']:
+        st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True)
 
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
