@@ -4,7 +4,7 @@ import streamlit as st
 # Configura a largura da página
 st.set_page_config(layout="wide")
 
-# Adiciona CSS para ajustar espaçamento e margens
+# Adiciona CSS para ajustar espaçamento e margens, e contorno vermelho
 st.markdown("""
     <style>
         /* Remove espaçamento entre as colunas */
@@ -38,6 +38,11 @@ st.markdown("""
         /* Ajusta largura das colunas para encaixar perfeitamente */
         [data-testid="stHorizontalBlock"] {
             width: 100% !important;
+        }
+
+        /* Contorno vermelho nas duas primeiras células */
+        .contorno-vermelho {
+            border: 2px solid red !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -154,17 +159,22 @@ def tratar_lista_master(texto):
     return lista  # Mantém os números duplicados
 
 # Função para formatar a lista master
-def formatar_lista_master(lista_master, circulados={}):
+def formatar_lista_master(lista_master, circulados={}, terminais_dos_primeiros=None):
     formatted_numbers = []
-    for numero in lista_master:
+    for i, numero in enumerate(lista_master):
         row = df[df['Número'] == numero].iloc[0]
         bg_color, text_color = cores['Par/Ímpar']['Zero'] if numero == 0 else cores['Cor'][row['Cor']]
         
         if numero in circulados:
             for attr, color in circulados[numero].items():
                 bg_color, text_color = color
+
+        # Verifica se o número está entre os dois primeiros ou tem terminal igual
+        class_extra = ""
+        if i < 2 or (terminais_dos_primeiros and row['Terminal'] in terminais_dos_primeiros):
+            class_extra = "contorno-vermelho"
         
-        formatted_numbers.append(f"<td style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
+        formatted_numbers.append(f"<td class='{class_extra}' style='color:{text_color}; background-color:{bg_color}; text-align:center; padding:5px;'>{numero}</td>")
 
     linhas = ['<tr>' + ''.join(formatted_numbers[i:i+10]) + '</tr>' for i in range(0, len(formatted_numbers), 10)]
     return '<table style="width:100%; table-layout:fixed;">' + ''.join(linhas) + '</table>'
@@ -302,39 +312,6 @@ def aplicar_filtro_term(alto=True):
         if numero not in numeros_escuros:
             st.session_state['circulados'][numero] = {'Outros': ('#ffffff', 'black')}  # Fundo branco e letra preta
 
-# Função para aplicar nova lógica de terminal + sequência
-def circular_terminais_consecutivos(lista_master):
-    st.session_state['circulados'] = {}
-    if len(lista_master) < 2:
-        return  # Não faz nada se não houver pelo menos dois números
-    
-    for i in range(len(lista_master) - 1):
-        num_atual = lista_master[i]
-        num_prox = lista_master[i + 1]
-        
-        terminal_atual = df[df['Número'] == num_atual]['Terminal'].values[0]
-        terminal_prox = df[df['Número'] == num_prox]['Terminal'].values[0]
-        
-        # Se os terminais forem consecutivos (5 e 0, 6 e 7, etc.)
-        if terminal_atual == '5' and terminal_prox == '0':
-            # Circular os números atuais e próximos
-            if num_atual not in st.session_state['circulados']:
-                st.session_state['circulados'][num_atual] = {}
-            if num_prox not in st.session_state['circulados']:
-                st.session_state['circulados'][num_prox] = {}
-            
-            # Aplica borda vermelha
-            st.session_state['circulados'][num_atual]['Terminal'] = ('#ffffff', '#ff0000')  # Fundo branco, borda vermelha
-            st.session_state['circulados'][num_prox]['Terminal'] = ('#ffffff', '#ff0000')  # Fundo branco, borda vermelha
-
-    # Adiciona lógica para números subsequentes com o mesmo padrão
-    for num in lista_master:
-        terminal = df[df['Número'] == num]['Terminal'].values[0]
-        if terminal == '5' or terminal == '0':
-            if num not in st.session_state['circulados']:
-                st.session_state['circulados'][num] = {}
-            st.session_state['circulados'][num]['Terminal'] = ('#ffffff', '#ff0000')  # Fundo branco, borda vermelha
-
 # Inicializa variáveis no session_state
 if 'lista_master' not in st.session_state:
     st.session_state['lista_master'] = []
@@ -361,8 +338,6 @@ def adicionar_numeros(novo_numero_input):
         st.session_state['novo_numero'] = ""  # Limpa o campo de entrada
         # Chama a função para analisar automaticamente após a adição
         st.session_state['resultado'], st.session_state['totais'] = analisar_roleta(lista_master)
-        # Aplica a nova lógica de terminais consecutivos
-        circular_terminais_consecutivos(lista_master)
     except ValueError:
         st.error("Por favor, insira números válidos.")
 
@@ -522,7 +497,8 @@ with col_direita:
 
     # Exibe a lista formatada
     if st.session_state['lista_master']:
-        st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados']), unsafe_allow_html=True)
+        terminais_dos_primeiros = [df[df['Número'] == n].iloc[0]['Terminal'] for n in st.session_state['lista_master'][:2]]
+        st.markdown(formatar_lista_master(st.session_state['lista_master'], st.session_state['circulados'], terminais_dos_primeiros), unsafe_allow_html=True)
 
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
@@ -581,5 +557,4 @@ with col_esquerda:
             st.markdown("<div style='background-color:black; padding:10px; color:white;'><strong>Terminal</strong></div>", unsafe_allow_html=True)
             for i in range(10):
                 bg_color, font_color = cores['Terminal'][str(i)]
-                st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True) 
-
+                st.markdown(create_cell(f"Term {i}", resultado[f'Term {i}'], int((resultado[f'Term {i}'] / totais['Terminal']) * 100), bg_color, font_color), unsafe_allow_html=True)
