@@ -305,6 +305,37 @@ with col_direita:
     if st.session_state['lista_master']:
         st.markdown(formatar_lista_master(st.session_state['lista_master'], terminais_primeiros_dois), unsafe_allow_html=True)
 
+    # Botões para funcionalidades adicionais
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+
+    with col1:
+        if st.button("Cor"):
+            st.write("Função não implementada para este botão ainda.")
+
+    with col2:
+        if st.button("Par/Ímpar"):
+            st.write("Função não implementada para este botão ainda.")
+
+    with col3:
+        if st.button("Dúzia"):
+            st.write("Função não implementada para este botão ainda.")
+
+    with col4:
+        if st.button("Coluna"):
+            st.write("Função não implementada para este botão ainda.")
+
+    with col5:
+        if st.button("Seção"):
+            st.write("Função não implementada para este botão ainda.")
+
+    with col6:
+        if st.button("Tipo"):
+            st.write("Função não implementada para este botão ainda.")
+
+    with col7:
+        if st.button("Terminal"):
+            st.write("Função não implementada para este botão ainda.")
+
 # Coluna da esquerda - Apresentar resultados do "Analisar Números"
 with col_esquerda:
     if st.session_state['resultado'] and st.session_state['totais']:
