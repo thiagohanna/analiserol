@@ -478,8 +478,8 @@ with col_direita:
 
     with col25:
         if st.button("Term 9"):
-            aplicar_terminal([9,19,9], [14,31,22,18,21,4,15,32,7,28])
-            st.session_state['legenda'] = "Numeros: 9,19,9 (+2v)"
+            aplicar_terminal([9,19,29], [14,31,22,18,21,4,15,32,7,28])
+            st.session_state['legenda'] = "Numeros: 9,19,29 (+2v)"
 
     # Exibe a legenda se houver
     if st.session_state['legenda']:
