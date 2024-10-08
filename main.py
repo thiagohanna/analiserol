@@ -6,6 +6,10 @@ import numpy as np
 if 'number_history' not in st.session_state:
     st.session_state.number_history = []
 
+# Função para limpar o campo de entrada
+def clear_input():
+    st.session_state["number_input"] = ""
+
 # Função para analisar a lista e preencher a tabela com percentuais
 def analyze_numbers(number_list):
     counts = {i: {j: 0 for j in range(37)} for i in range(37)}
@@ -55,8 +59,8 @@ if number_input:
         new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
-            # Limpar o campo de entrada forçando a redefinição
-            st.experimental_rerun()
+            # Limpar o campo de entrada chamando a função que atualiza o estado da sessão
+            clear_input()
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
