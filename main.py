@@ -55,8 +55,8 @@ if number_input:
         new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
-            # Forçar a atualização da página para limpar o campo de texto
-            st.experimental_rerun()
+            # Usar `st.experimental_set_query_params` para limpar o campo de texto após a submissão
+            st.experimental_set_query_params(number_input="")
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
