@@ -25,15 +25,15 @@ def analyze_numbers(number_list):
         percentages = []
         for y in range(37):
             if total_counts[x] > 0:
-                percentage = (counts[x][y] / total_counts[x]) * 100
+                percentage = int((counts[x][y] / total_counts[x]) * 100)  # Remove casas decimais
                 if percentage > 0:  # Apenas mostrar células com valores diferentes de zero
-                    percentages.append((y, f"{y} ({percentage:.2f}%)"))
+                    percentages.append((y, f"<span style='font-size:14px;'>{y}</span> <span style='font-size:14px;'>( {percentage}% )</span>"))
                 else:
                     percentages.append((y, ""))  # Células vazias para percentuais iguais a zero
             else:
                 percentages.append((y, ""))  # Células vazias se não houver cálculos ativos
         # Ordenar as células de cada linha pela maior para menor porcentagem
-        percentages.sort(key=lambda item: float(item[1].split('(')[-1][:-2]) if item[1] else 0, reverse=True)
+        percentages.sort(key=lambda item: int(item[1].split('(')[-1][:-2]) if item[1] else 0, reverse=True)
         df_analysis.loc[x] = [cell[1] for cell in percentages]
     
     return df_analysis
@@ -56,6 +56,9 @@ try:
         df_analysis = analyze_numbers(number_list)
         # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
         st.write("Tabela de Análise de Números")
-        st.dataframe(df_analysis, width=1900, height=1200)
+        st.markdown(
+            df_analysis.style.hide(axis='columns').to_html(), 
+            unsafe_allow_html=True
+        )
 except ValueError:
     st.error("Por favor, insira apenas números inteiros separados por vírgula.")
