@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# Inicializar o histórico de números
+if 'number_history' not in st.session_state:
+    st.session_state.number_history = []
+
 # Função para analisar a lista e preencher a tabela com percentuais
 def analyze_numbers(number_list):
     counts = {i: {j: 0 for j in range(37)} for i in range(37)}
@@ -35,31 +39,37 @@ def analyze_numbers(number_list):
 
         # Ordenar as células de cada linha pela maior para menor porcentagem
         percentages.sort(key=lambda item: item[1], reverse=True)
-        df_analysis.loc[x] = [f"<span style='font-size:14px;'>{cell[0]}</span> <span style='font-size:14px;'>( {cell[1]}% )</span>" if cell[1] > 0 else "" for cell in percentages]
+        df_analysis.loc[x] = [f"<span style='font-size:14px; white-space: nowrap;'>{cell[0]}</span> <span style='font-size:14px; white-space: nowrap;'>( {cell[1]}% )</span>" if cell[1] > 0 else "" for cell in percentages]
 
     return df_analysis
 
 # Configuração da página do Streamlit
 st.set_page_config(layout="wide")  # Define o layout para tela larga
 st.title("Análise de Números")
-st.write("Insira uma lista de números separados por vírgula para analisar a frequência de números à esquerda.")
+st.write("Insira um número para adicionar à sequência e analisar a frequência de números à esquerda.")
 
-# Campo de entrada para o usuário fornecer a lista de números
-number_input = st.text_input("Digite os números separados por vírgula:", "1,5,1,3,1,6,1,3,6,5,3,5,3,5")
+# Campo de entrada para adicionar um novo número
+new_number = st.text_input("Digite um número:", "")
 
-# Limpar e converter a entrada do usuário para uma lista de inteiros
-try:
-    # Remover espaços em excesso e converter para inteiros
-    number_list = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
-    if not number_list:
-        st.error("Por favor, insira uma lista de números inteiros separados por vírgula.")
-    else:
-        df_analysis = analyze_numbers(number_list)
-        # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
-        st.write("Tabela de Análise de Números")
-        st.markdown(
-            df_analysis.style.hide(axis='columns').to_html(), 
-            unsafe_allow_html=True
-        )
-except Exception as e:
-    st.error(f"Ocorreu um erro ao processar a entrada. Certifique-se de que a lista esteja correta. Erro: {e}")
+# Processar o novo número inserido
+if new_number.isdigit() and 0 <= int(new_number) <= 36:
+    st.session_state.number_history.append(int(new_number))
+    st.success(f"Número {new_number} adicionado com sucesso!")
+else:
+    if new_number:  # Se houver entrada, mas não for válida
+        st.error("Por favor, insira um número inteiro entre 0 e 36.")
+
+# Analisar a lista completa de números inseridos
+if st.session_state.number_history:
+    df_analysis = analyze_numbers(st.session_state.number_history)
+    
+    # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
+    st.write("Tabela de Análise de Números")
+    st.markdown(
+        df_analysis.style.hide(axis='columns').to_html(), 
+        unsafe_allow_html=True
+    )
+
+    # Mostrar o histórico de números já inseridos
+    st.write("Histórico de Números Digitados:")
+    st.write(st.session_state.number_history)
