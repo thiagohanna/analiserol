@@ -6,9 +6,51 @@ import numpy as np
 if 'number_history' not in st.session_state:
     st.session_state.number_history = []
 
-# Função para limpar o campo de entrada
-def clear_input():
-    st.session_state["number_input"] = ""
+# Inicializar o valor do campo de entrada se não estiver definido
+if 'number_input' not in st.session_state:
+    st.session_state.number_input = ""
+
+# Função para adicionar números ao histórico e limpar o campo de entrada
+def add_numbers():
+    try:
+        # Processar múltiplos números separados por vírgula
+        new_numbers = [int(num.strip()) for num in st.session_state.number_input.split(",") if num.strip().isdigit()]
+        if new_numbers:
+            st.session_state.number_history = new_numbers + st.session_state.number_history
+            st.session_state.number_input = ""  # Limpar o campo de entrada após processar os números
+    except ValueError:
+        st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
+
+# Configuração da página do Streamlit
+st.set_page_config(layout="wide")  # Define o layout para tela larga
+st.title("Análise de Números")
+st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
+
+# Campo de entrada para adicionar números separados por vírgula ou individualmente
+st.text_input(
+    "Digite números separados por vírgula ou um número individual:",
+    value=st.session_state.number_input,
+    key="number_input"
+)
+
+# Botão para confirmar a adição dos números
+if st.button("Adicionar número(s)"):
+    add_numbers()  # Chamar a função para adicionar números ao histórico
+
+# Analisar a lista completa de números inseridos
+if st.session_state.number_history:
+    df_analysis = analyze_numbers(st.session_state.number_history)
+    
+    # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
+    st.write("Tabela de Análise de Números")
+    st.markdown(
+        df_analysis.style.hide(axis='columns').to_html(), 
+        unsafe_allow_html=True
+    )
+
+    # Mostrar o histórico de números já inseridos, com os últimos números à esquerda
+    st.write("Histórico de Números Digitados (últimos à esquerda):")
+    st.write(", ".join(map(str, st.session_state.number_history)))
 
 # Função para analisar a lista e preencher a tabela com percentuais
 def analyze_numbers(number_list):
@@ -43,42 +85,3 @@ def analyze_numbers(number_list):
         df_analysis.loc[x] = [f"<div style='text-align: center;'><span style='font-size:14px;'>{cell[0]}</span><br><span style='font-size:14px;'>( {cell[1]}% )</span></div>" if cell[1] > 0 else "" for cell in percentages]
 
     return df_analysis
-
-# Configuração da página do Streamlit
-st.set_page_config(layout="wide")  # Define o layout para tela larga
-st.title("Análise de Números")
-st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
-
-# Campo de entrada para adicionar números separados por vírgula ou individualmente
-number_input = st.text_input(
-    "Digite números separados por vírgula ou um número individual:",
-    value="",
-    key="number_input"
-)
-
-# Botão para confirmar a adição dos números
-if st.button("Adicionar número(s)"):
-    if number_input:
-        try:
-            # Processar múltiplos números separados por vírgula
-            new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
-            if new_numbers:
-                st.session_state.number_history = new_numbers + st.session_state.number_history
-                clear_input()  # Limpar o campo de entrada após processar os números
-        except ValueError:
-            st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
-
-# Analisar a lista completa de números inseridos
-if st.session_state.number_history:
-    df_analysis = analyze_numbers(st.session_state.number_history)
-    
-    # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
-    st.write("Tabela de Análise de Números")
-    st.markdown(
-        df_analysis.style.hide(axis='columns').to_html(), 
-        unsafe_allow_html=True
-    )
-
-    # Mostrar o histórico de números já inseridos, com os últimos números à esquerda
-    st.write("Histórico de Números Digitados (últimos à esquerda):")
-    st.write(", ".join(map(str, st.session_state.number_history)))
