@@ -11,13 +11,10 @@ def analyze_numbers(number_list):
     counts = {i: {j: 0 for j in range(37)} for i in range(37)}
     total_counts = {i: 0 for i in range(37)}
 
-    # Remover números consecutivos repetidos para considerar apenas uma ocorrência
-    filtered_list = [number_list[i] for i in range(len(number_list)) if i == 0 or number_list[i] != number_list[i - 1]]
-
-    # Percorrer a lista filtrada para contar as ocorrências de pares (y, x)
-    for i in range(1, len(filtered_list)):
-        y = filtered_list[i - 1]
-        x = filtered_list[i]
+    # Mantém todos os números na lista, incluindo repetições consecutivas
+    for i in range(1, len(number_list)):
+        y = number_list[i - 1]
+        x = number_list[i]
         if 0 <= y <= 36 and 0 <= x <= 36:  # Verifica se os números estão no intervalo desejado
             counts[x][y] += 1
             total_counts[x] += 1
@@ -58,9 +55,11 @@ if number_input:
         new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
-            st.success(f"Números {', '.join(map(str, new_numbers))} adicionados com sucesso!")
         else:
             st.error("Por favor, insira apenas números inteiros entre 0 e 36 separados por vírgula.")
+
+        # Limpar o campo de entrada após adicionar os números
+        st.experimental_rerun()
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
