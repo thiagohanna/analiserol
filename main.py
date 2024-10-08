@@ -2,6 +2,40 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+# Função para analisar a lista e preencher a tabela com percentuais
+def analyze_numbers(number_list):
+    counts = {i: {j: 0 for j in range(37)} for i in range(37)}
+    total_counts = {i: 0 for i in range(37)}
+
+    # Mantém todos os números na lista, incluindo repetições consecutivas
+    for i in range(1, len(number_list)):
+        y = number_list[i - 1]
+        x = number_list[i]
+        if 0 <= y <= 36 and 0 <= x <= 36:  # Verifica se os números estão no intervalo desejado
+            counts[x][y] += 1
+            total_counts[x] += 1
+
+    # Criar uma tabela de análise com os percentuais calculados
+    column_names = [f"{i+1}º" for i in range(37)]
+    df_analysis = pd.DataFrame(index=range(37), columns=column_names)
+    for x in range(37):
+        percentages = []
+        for y in range(37):
+            if total_counts[x] > 0:
+                percentage = int((counts[x][y] / total_counts[x]) * 100)  # Remove casas decimais
+                if percentage > 0:  # Apenas mostrar células com valores diferentes de zero
+                    percentages.append((y, percentage))
+                else:
+                    percentages.append((y, 0))  # Células vazias para percentuais iguais a zero
+            else:
+                percentages.append((y, 0))  # Células vazias se não houver cálculos ativos
+
+        # Ordenar as células de cada linha pela maior para menor porcentagem
+        percentages.sort(key=lambda item: item[1], reverse=True)
+        df_analysis.loc[x] = [f"<div style='text-align: center;'><span style='font-size:14px;'>{cell[0]}</span><br><span style='font-size:14px;'>( {cell[1]}% )</span></div>" if cell[1] > 0 else "" for cell in percentages]
+
+    return df_analysis
+
 # Inicializar o histórico de números
 if 'number_history' not in st.session_state:
     st.session_state.number_history = []
@@ -47,37 +81,3 @@ if st.session_state.number_history:
     # Mostrar o histórico de números já inseridos, com os últimos números à esquerda
     st.write("Histórico de Números Digitados (últimos à esquerda):")
     st.write(", ".join(map(str, st.session_state.number_history)))
-
-# Função para analisar a lista e preencher a tabela com percentuais
-def analyze_numbers(number_list):
-    counts = {i: {j: 0 for j in range(37)} for i in range(37)}
-    total_counts = {i: 0 for i in range(37)}
-
-    # Mantém todos os números na lista, incluindo repetições consecutivas
-    for i in range(1, len(number_list)):
-        y = number_list[i - 1]
-        x = number_list[i]
-        if 0 <= y <= 36 and 0 <= x <= 36:  # Verifica se os números estão no intervalo desejado
-            counts[x][y] += 1
-            total_counts[x] += 1
-
-    # Criar uma tabela de análise com os percentuais calculados
-    column_names = [f"{i+1}º" for i in range(37)]
-    df_analysis = pd.DataFrame(index=range(37), columns=column_names)
-    for x in range(37):
-        percentages = []
-        for y in range(37):
-            if total_counts[x] > 0:
-                percentage = int((counts[x][y] / total_counts[x]) * 100)  # Remove casas decimais
-                if percentage > 0:  # Apenas mostrar células com valores diferentes de zero
-                    percentages.append((y, percentage))
-                else:
-                    percentages.append((y, 0))  # Células vazias para percentuais iguais a zero
-            else:
-                percentages.append((y, 0))  # Células vazias se não houver cálculos ativos
-
-        # Ordenar as células de cada linha pela maior para menor porcentagem
-        percentages.sort(key=lambda item: item[1], reverse=True)
-        df_analysis.loc[x] = [f"<div style='text-align: center;'><span style='font-size:14px;'>{cell[0]}</span><br><span style='font-size:14px;'>( {cell[1]}% )</span></div>" if cell[1] > 0 else "" for cell in percentages]
-
-    return df_analysis
