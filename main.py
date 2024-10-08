@@ -47,7 +47,8 @@ def add_numbers():
         try:
             new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
             if new_numbers:
-                st.session_state.number_history.extend(new_numbers)  # Adiciona os novos números ao histórico existente
+                # Adiciona os novos números ao início do histórico existente
+                st.session_state.number_history = new_numbers + st.session_state.number_history
                 st.session_state["number_input"] = ""  # Limpar o campo de entrada
         except ValueError:
             st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
