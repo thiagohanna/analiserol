@@ -7,10 +7,13 @@ def analyze_numbers(number_list):
     counts = {i: {j: 0 for j in range(37)} for i in range(37)}
     total_counts = {i: 0 for i in range(37)}
     
-    # Percorrer a lista para contar as ocorrências de pares (y, x)
-    for i in range(1, len(number_list)):
-        y = number_list[i - 1]
-        x = number_list[i]
+    # Remover números consecutivos repetidos para considerar apenas uma ocorrência
+    filtered_list = [number_list[i] for i in range(len(number_list)) if i == 0 or number_list[i] != number_list[i - 1]]
+    
+    # Percorrer a lista filtrada para contar as ocorrências de pares (y, x)
+    for i in range(1, len(filtered_list)):
+        y = filtered_list[i - 1]
+        x = filtered_list[i]
         if 0 <= y <= 36 and 0 <= x <= 36:  # Verifica se os números estão no intervalo desejado
             counts[x][y] += 1
             total_counts[x] += 1
@@ -23,13 +26,13 @@ def analyze_numbers(number_list):
             if total_counts[x] > 0:
                 percentage = (counts[x][y] / total_counts[x]) * 100
                 if percentage > 0:  # Apenas mostrar células com valores diferentes de zero
-                    percentages.append((y, f"{y} - {percentage:.2f}%"))
+                    percentages.append((y, f"<span style='font-size:16px;'>{y}</span> <span style='font-size:12px;'>( {percentage:.2f}% )</span>"))
                 else:
                     percentages.append((y, ""))  # Células vazias para percentuais iguais a zero
             else:
                 percentages.append((y, ""))  # Células vazias se não houver cálculos ativos
         # Ordenar as células de cada linha pela maior para menor porcentagem
-        percentages.sort(key=lambda item: float(item[1].split(' - ')[1][:-1]) if item[1] else 0, reverse=True)
+        percentages.sort(key=lambda item: float(item[1].split('(')[-1][:-2]) if item[1] else 0, reverse=True)
         df_analysis.loc[x] = [cell[1] for cell in percentages]
     
     return df_analysis
@@ -49,6 +52,9 @@ try:
     
     # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
     st.write("Tabela de Análise de Números da Roleta")
-    st.dataframe(df_analysis.style.hide(axis='columns'), width=1200, height=1800)
+    st.markdown(
+        df_analysis.style.hide(axis='columns').to_html(), 
+        unsafe_allow_html=True
+    )
 except ValueError:
     st.error("Por favor, insira apenas números inteiros separados por vírgula.")
