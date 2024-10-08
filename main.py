@@ -16,13 +16,19 @@ def analyze_numbers(number_list):
             total_counts[x] += 1
     
     # Criar uma tabela de análise com os percentuais calculados
-    df_analysis = pd.DataFrame(np.zeros((37, 37)), columns=range(37), index=range(37))
+    df_analysis = pd.DataFrame(index=range(37), columns=range(37))
     for x in range(37):
+        percentages = []
         for y in range(37):
             if total_counts[x] > 0:
-                df_analysis.at[x, y] = (counts[x][y] / total_counts[x]) * 100
+                percentage = (counts[x][y] / total_counts[x]) * 100
+                percentages.append((y, f"{y} - {percentage:.2f}%"))
             else:
-                df_analysis.at[x, y] = 0
+                percentages.append((y, f"{y} - 0.00%"))
+        # Ordenar as células de cada linha pela maior para menor porcentagem
+        percentages.sort(key=lambda item: float(item[1].split(' - ')[1][:-1]), reverse=True)
+        df_analysis.loc[x] = [cell[1] for cell in percentages]
+    
     return df_analysis
 
 # Configuração da página do Streamlit
@@ -37,8 +43,8 @@ try:
     number_list = [int(num.strip()) for num in number_input.split(",")]
     df_analysis = analyze_numbers(number_list)
     
-    # Exibir a tabela de análise resultante
+    # Exibir a tabela de análise resultante sem cabeçalhos de coluna
     st.write("Tabela de Análise de Números da Roleta")
-    st.dataframe(df_analysis)
+    st.dataframe(df_analysis.style.hide(axis='columns'))
 except ValueError:
     st.error("Por favor, insira apenas números inteiros separados por vírgula.")
