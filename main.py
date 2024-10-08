@@ -44,14 +44,14 @@ st.title("Análise de Números")
 st.write("Insira uma lista de números separados por vírgula para analisar a frequência de números à esquerda.")
 
 # Campo de entrada para o usuário fornecer a lista de números
-number_input = st.text_input("Digite os números separados por vírgula:", "32, 13, 26, 20, 18, 10")
+number_input = st.text_input("Digite os números separados por vírgula:", "1,5,1,3,1,6,1,3,6,5,3,5,3,5")
 
 # Limpar e converter a entrada do usuário para uma lista de inteiros
 try:
     # Remover espaços em excesso e converter para inteiros
     number_list = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
     if not number_list:
-        st.error("Por favor, insira apenas números inteiros separados por vírgula.")
+        st.error("Por favor, insira uma lista de números inteiros separados por vírgula.")
     else:
         df_analysis = analyze_numbers(number_list)
         # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
@@ -60,5 +60,5 @@ try:
             df_analysis.style.hide(axis='columns').to_html(), 
             unsafe_allow_html=True
         )
-except ValueError:
-    st.error("Por favor, insira apenas números inteiros separados por vírgula.")
+except Exception as e:
+    st.error(f"Ocorreu um erro ao processar a entrada. Certifique-se de que a lista esteja correta. Erro: {e}")
