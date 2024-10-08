@@ -55,8 +55,8 @@ if number_input:
         new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
-            # Limpar o campo de entrada redefinindo o valor para uma string vazia
-            st.experimental_set_query_params(number_input="")
+            # Forçar a atualização da página para limpar o campo de texto
+            st.experimental_rerun()
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
@@ -73,4 +73,4 @@ if st.session_state.number_history:
 
     # Mostrar o histórico de números já inseridos, com os últimos números à esquerda
     st.write("Histórico de Números Digitados (últimos à esquerda):")
-    st.write(", ".join(map(str, st.session_state.number_history)))  
+    st.write(", ".join(map(str, st.session_state.number_history)))
