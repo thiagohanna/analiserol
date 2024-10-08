@@ -26,7 +26,7 @@ def analyze_numbers(number_list):
             if total_counts[x] > 0:
                 percentage = (counts[x][y] / total_counts[x]) * 100
                 if percentage > 0:  # Apenas mostrar células com valores diferentes de zero
-                    percentages.append((y, f"<span style='font-size:16px;'>{y}</span> <span style='font-size:12px;'>( {percentage:.2f}% )</span>"))
+                    percentages.append((y, f"{y} ({percentage:.2f}%)"))
                 else:
                     percentages.append((y, ""))  # Células vazias para percentuais iguais a zero
             else:
@@ -55,9 +55,6 @@ try:
         df_analysis = analyze_numbers(number_list)
         # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
         st.write("Tabela de Análise de Números da Roleta")
-        st.markdown(
-            df_analysis.style.hide(axis='columns').to_html(), 
-            unsafe_allow_html=True
-        )
+        st.dataframe(df_analysis, width=1900, height=1200)
 except ValueError:
     st.error("Por favor, insira apenas números inteiros separados por vírgula.")
