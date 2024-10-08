@@ -19,7 +19,8 @@ def analyze_numbers(number_list):
             total_counts[x] += 1
     
     # Criar uma tabela de análise com os percentuais calculados
-    df_analysis = pd.DataFrame(index=range(37), columns=range(37))
+    column_names = [f"{i+1}º" for i in range(37)]
+    df_analysis = pd.DataFrame(index=range(37), columns=column_names)
     for x in range(37):
         percentages = []
         for y in range(37):
@@ -39,7 +40,7 @@ def analyze_numbers(number_list):
 
 # Configuração da página do Streamlit
 st.set_page_config(layout="wide")  # Define o layout para tela larga
-st.title("Análise de Números da Roleta")
+st.title("Análise de Números")
 st.write("Insira uma lista de números separados por vírgula para analisar a frequência de números à esquerda.")
 
 # Campo de entrada para o usuário fornecer a lista de números
@@ -54,7 +55,7 @@ try:
     else:
         df_analysis = analyze_numbers(number_list)
         # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
-        st.write("Tabela de Análise de Números da Roleta")
+        st.write("Tabela de Análise de Números")
         st.dataframe(df_analysis, width=1900, height=1200)
 except ValueError:
     st.error("Por favor, insira apenas números inteiros separados por vírgula.")
