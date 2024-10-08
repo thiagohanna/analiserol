@@ -46,7 +46,7 @@ st.title("Análise de Números")
 st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
 # Campo de entrada para adicionar números separados por vírgula ou individualmente
-number_input = st.text_input("Digite números separados por vírgula ou um número individual:", "")
+number_input = st.text_input("Digite números separados por vírgula ou um número individual:")
 
 # Processar a entrada de números
 if number_input:
@@ -55,11 +55,8 @@ if number_input:
         new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
-        else:
-            st.error("Por favor, insira apenas números inteiros entre 0 e 36 separados por vírgula.")
-
-        # Limpar o campo de entrada após adicionar os números
-        st.experimental_rerun()
+            # Limpar o campo de entrada definindo o valor para uma string vazia
+            st.experimental_set_query_params()
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
