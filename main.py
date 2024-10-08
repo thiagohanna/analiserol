@@ -36,7 +36,7 @@ def analyze_numbers(number_list):
 
         # Ordenar as células de cada linha pela maior para menor porcentagem
         percentages.sort(key=lambda item: item[1], reverse=True)
-        df_analysis.loc[x] = [f"<span style='font-size:14px; white-space: nowrap;'>{cell[0]}</span> <span style='font-size:14px; white-space: nowrap;'>( {cell[1]}% )</span>" if cell[1] > 0 else "" for cell in percentages]
+        df_analysis.loc[x] = [f"<div style='text-align: center;'><span style='font-size:14px;'>{cell[0]}</span><br><span style='font-size:14px;'>( {cell[1]}% )</span></div>" if cell[1] > 0 else "" for cell in percentages]
 
     return df_analysis
 
@@ -73,4 +73,4 @@ if st.session_state.number_history:
 
     # Mostrar o histórico de números já inseridos, com os últimos números à esquerda
     st.write("Histórico de Números Digitados (últimos à esquerda):")
-    st.write(", ".join(map(str, st.session_state.number_history))) 
+    st.write(", ".join(map(str, st.session_state.number_history)))  
