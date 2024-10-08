@@ -6,9 +6,9 @@ import numpy as np
 if 'number_history' not in st.session_state:
     st.session_state.number_history = []
 
-# Função para limpar o campo de entrada usando callback
+# Função para limpar o campo de entrada
 def clear_input():
-    st.session_state.number_input = ""
+    st.session_state["number_input"] = ""
 
 # Função para analisar a lista e preencher a tabela com percentuais
 def analyze_numbers(number_list):
@@ -53,20 +53,20 @@ st.write("Insira números separados por vírgula ou um número individual para a
 number_input = st.text_input(
     "Digite números separados por vírgula ou um número individual:",
     value="",
-    key="number_input",
-    on_change=clear_input  # Callback para limpar o campo após a entrada
+    key="number_input"
 )
 
-# Processar a entrada de números
-if number_input:
-    try:
-        # Processar múltiplos números separados por vírgula
-        new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
-        if new_numbers:
-            st.session_state.number_history = new_numbers + st.session_state.number_history
-            clear_input()  # Limpar o campo de entrada após processar os números
-    except ValueError:
-        st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
+# Botão para confirmar a adição dos números
+if st.button("Adicionar número(s)"):
+    if number_input:
+        try:
+            # Processar múltiplos números separados por vírgula
+            new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
+            if new_numbers:
+                st.session_state.number_history = new_numbers + st.session_state.number_history
+                clear_input()  # Limpar o campo de entrada após processar os números
+        except ValueError:
+            st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
 # Analisar a lista completa de números inseridos
 if st.session_state.number_history:
