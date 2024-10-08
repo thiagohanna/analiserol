@@ -10,21 +10,15 @@ if 'number_history' not in st.session_state:
 if 'number_input' not in st.session_state:
     st.session_state.number_input = ""
 
-# Função para adicionar números ao histórico e limpar o campo de entrada
+# Função para adicionar números ao histórico
 def add_numbers():
     try:
         # Processar múltiplos números separados por vírgula
         new_numbers = [int(num.strip()) for num in st.session_state.number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history.extend(new_numbers)  # Adiciona os novos números ao histórico existente
-        # Limpar o campo de entrada
-        st.session_state.number_input = ""  # Marca a entrada como processada
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
-
-# Função callback para limpar a entrada após adicionar os números
-def clear_input():
-    st.session_state.number_input = ""
 
 # Configuração da página do Streamlit
 st.set_page_config(layout="wide")  # Define o layout para tela larga
@@ -36,12 +30,8 @@ st.text_input(
     "Digite números separados por vírgula ou um número individual:",
     value=st.session_state.number_input,
     key="number_input",
-    on_change=add_numbers  # Executa a função para adicionar números quando a entrada mudar
+    on_change=add_numbers  # Executa a função para adicionar números quando a entrada mudar (Enter)
 )
-
-# Botão para confirmar a adição dos números
-if st.button("Adicionar número(s)"):
-    clear_input()  # Limpa a entrada usando a função callback
 
 # Analisar a lista completa de números inseridos
 if st.session_state.number_history:
