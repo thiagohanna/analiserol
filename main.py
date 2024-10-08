@@ -46,18 +46,23 @@ def analyze_numbers(number_list):
 # Configuração da página do Streamlit
 st.set_page_config(layout="wide")  # Define o layout para tela larga
 st.title("Análise de Números")
-st.write("Insira um número para adicionar à sequência e analisar a frequência de números à esquerda.")
+st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
-# Campo de entrada para adicionar um novo número
-new_number = st.text_input("Digite um número:", "")
+# Campo de entrada para adicionar números separados por vírgula ou individualmente
+number_input = st.text_input("Digite números separados por vírgula ou um número individual:", "")
 
-# Processar o novo número inserido
-if new_number.isdigit() and 0 <= int(new_number) <= 36:
-    st.session_state.number_history.append(int(new_number))
-    st.success(f"Número {new_number} adicionado com sucesso!")
-else:
-    if new_number:  # Se houver entrada, mas não for válida
-        st.error("Por favor, insira um número inteiro entre 0 e 36.")
+# Processar a entrada de números
+if number_input:
+    try:
+        # Processar múltiplos números separados por vírgula
+        new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
+        if new_numbers:
+            st.session_state.number_history = new_numbers + st.session_state.number_history
+            st.success(f"Números {', '.join(map(str, new_numbers))} adicionados com sucesso!")
+        else:
+            st.error("Por favor, insira apenas números inteiros entre 0 e 36 separados por vírgula.")
+    except ValueError:
+        st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
 # Analisar a lista completa de números inseridos
 if st.session_state.number_history:
@@ -70,6 +75,6 @@ if st.session_state.number_history:
         unsafe_allow_html=True
     )
 
-    # Mostrar o histórico de números já inseridos
-    st.write("Histórico de Números Digitados:")
-    st.write(st.session_state.number_history)
+    # Mostrar o histórico de números já inseridos, com os últimos números à esquerda
+    st.write("Histórico de Números Digitados (últimos à esquerda):")
+    st.write(", ".join(map(str, st.session_state.number_history)))
