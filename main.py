@@ -45,16 +45,19 @@ st.write("Insira uma lista de números separados por vírgula para analisar a fr
 # Campo de entrada para o usuário fornecer a lista de números
 number_input = st.text_input("Digite os números separados por vírgula:", "32, 13, 26, 20, 18, 10")
 
-# Converter a entrada do usuário para uma lista de inteiros
+# Limpar e converter a entrada do usuário para uma lista de inteiros
 try:
-    number_list = [int(num.strip()) for num in number_input.split(",")]
-    df_analysis = analyze_numbers(number_list)
-    
-    # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
-    st.write("Tabela de Análise de Números da Roleta")
-    st.markdown(
-        df_analysis.style.hide(axis='columns').to_html(), 
-        unsafe_allow_html=True
-    )
+    # Remover espaços em excesso e converter para inteiros
+    number_list = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
+    if not number_list:
+        st.error("Por favor, insira apenas números inteiros separados por vírgula.")
+    else:
+        df_analysis = analyze_numbers(number_list)
+        # Exibir a tabela de análise resultante sem cabeçalhos de coluna e células sem valores de zero
+        st.write("Tabela de Análise de Números da Roleta")
+        st.markdown(
+            df_analysis.style.hide(axis='columns').to_html(), 
+            unsafe_allow_html=True
+        )
 except ValueError:
     st.error("Por favor, insira apenas números inteiros separados por vírgula.")
