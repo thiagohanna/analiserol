@@ -6,9 +6,9 @@ import numpy as np
 if 'number_history' not in st.session_state:
     st.session_state.number_history = []
 
-# Função para limpar o campo de entrada
+# Função para limpar o campo de entrada usando callback
 def clear_input():
-    st.session_state["number_input"] = ""
+    st.session_state.number_input = ""
 
 # Função para analisar a lista e preencher a tabela com percentuais
 def analyze_numbers(number_list):
@@ -50,7 +50,12 @@ st.title("Análise de Números")
 st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
 # Campo de entrada para adicionar números separados por vírgula ou individualmente
-number_input = st.text_input("Digite números separados por vírgula ou um número individual:", value="", key="number_input")
+number_input = st.text_input(
+    "Digite números separados por vírgula ou um número individual:",
+    value="",
+    key="number_input",
+    on_change=clear_input  # Callback para limpar o campo após a entrada
+)
 
 # Processar a entrada de números
 if number_input:
@@ -59,8 +64,7 @@ if number_input:
         new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
-            # Limpar o campo de entrada chamando a função que atualiza o estado da sessão
-            clear_input()
+            clear_input()  # Limpar o campo de entrada após processar os números
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
