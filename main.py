@@ -2,10 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# Inicializar o histórico de números
-if 'number_history' not in st.session_state:
-    st.session_state.number_history = []
-
 # Função para analisar a lista e preencher a tabela com percentuais
 def analyze_numbers(number_list):
     counts = {i: {j: 0 for j in range(37)} for i in range(37)}
@@ -40,25 +36,33 @@ def analyze_numbers(number_list):
 
     return df_analysis
 
+# Inicializar o histórico de números
+if 'number_history' not in st.session_state:
+    st.session_state.number_history = []
+
+# Função para adicionar números ao histórico e limpar o campo de entrada
+def add_numbers():
+    number_input = st.session_state["number_input"].strip()  # Captura a entrada atual do usuário
+    if number_input:
+        try:
+            new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
+            if new_numbers:
+                st.session_state.number_history.extend(new_numbers)  # Adiciona os novos números ao histórico existente
+                st.session_state["number_input"] = ""  # Limpar o campo de entrada
+        except ValueError:
+            st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
+
 # Configuração da página do Streamlit
 st.set_page_config(layout="wide")  # Define o layout para tela larga
 st.title("Análise de Números")
 st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
-# Campo de entrada para adicionar números separados por vírgula ou individualmente
-number_input = st.text_input("Digite números separados por vírgula ou um número individual:")
-
-# Processar a entrada de números
-if number_input:
-    try:
-        # Processar múltiplos números separados por vírgula
-        new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
-        if new_numbers:
-            st.session_state.number_history = new_numbers + st.session_state.number_history
-            # Usar `st.experimental_set_query_params` para limpar o campo de texto após a submissão
-            st.experimental_set_query_params(number_input="")
-    except ValueError:
-        st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
+# Campo de entrada para adicionar números separados por vírgula ou individualmente com on_change
+st.text_input(
+    "Digite números separados por vírgula ou um número individual:",
+    key="number_input",
+    on_change=add_numbers  # Executa a função para adicionar números quando a entrada mudar (Enter)
+)
 
 # Analisar a lista completa de números inseridos
 if st.session_state.number_history:
