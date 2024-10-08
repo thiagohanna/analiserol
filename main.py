@@ -27,7 +27,7 @@ st.title("Análise de Números")
 st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
 # Campo de entrada para adicionar números separados por vírgula ou individualmente
-st.text_input(
+input_value = st.text_input(
     "Digite números separados por vírgula ou um número individual:",
     value=st.session_state.number_input,
     key="number_input"
