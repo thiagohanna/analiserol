@@ -18,6 +18,7 @@ def add_numbers():
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
             st.session_state.number_input = ""  # Limpar o campo de entrada após processar os números
+        st.experimental_rerun()  # Recarregar a página para aplicar as mudanças
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
