@@ -36,7 +36,7 @@ def analyze_numbers(number_list):
 
         # Ordenar as células de cada linha pela maior para menor porcentagem
         percentages.sort(key=lambda item: item[1], reverse=True)
-        df_analysis.loc[x] = [f"<span style='font-size:14px; white-space: nowrap;'>{cell[0]}</span> <span style='font-size:14px; white-space: nowrap;'>( {cell[1]}% )</span>" if cell[1] > 0 else "" for cell in percentages]
+        df_analysis.loc[x] = [f"<div style='text-align: center;'><span style='font-size:14px;'>{cell[0]}</span><br><span style='font-size:14px;'>( {cell[1]}% )</span></div>" if cell[1] > 0 else "" for cell in percentages]
 
     return df_analysis
 
@@ -46,7 +46,7 @@ st.title("Análise de Números")
 st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
 # Campo de entrada para adicionar números separados por vírgula ou individualmente
-number_input = st.text_input("Digite números separados por vírgula ou um número individual:")
+number_input = st.text_input("Digite números separados por vírgula ou um número individual:", value="", key="number_input")
 
 # Processar a entrada de números
 if number_input:
@@ -55,8 +55,8 @@ if number_input:
         new_numbers = [int(num.strip()) for num in number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
             st.session_state.number_history = new_numbers + st.session_state.number_history
-            # Limpar o campo de entrada redefinindo o valor para uma string vazia
-            st.experimental_set_query_params(number_input="")
+            # Limpar o campo de entrada forçando a redefinição
+            st.experimental_rerun()
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
@@ -73,4 +73,4 @@ if st.session_state.number_history:
 
     # Mostrar o histórico de números já inseridos, com os últimos números à esquerda
     st.write("Histórico de Números Digitados (últimos à esquerda):")
-    st.write(", ".join(map(str, st.session_state.number_history))) 
+    st.write(", ".join(map(str, st.session_state.number_history)))
