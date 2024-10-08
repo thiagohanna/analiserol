@@ -6,15 +6,19 @@ import numpy as np
 if 'number_history' not in st.session_state:
     st.session_state.number_history = []
 
+# Inicializar o valor do campo de entrada se não estiver definido
+if 'number_input' not in st.session_state:
+    st.session_state.number_input = ""
+
 # Função para adicionar números ao histórico e limpar o campo de entrada
 def add_numbers():
     try:
         # Processar múltiplos números separados por vírgula
         new_numbers = [int(num.strip()) for num in st.session_state.number_input.split(",") if num.strip().isdigit()]
         if new_numbers:
-            st.session_state.number_history = new_numbers + st.session_state.number_history
-        # Recarregar a página para limpar o campo de entrada e atualizar os dados
-        st.experimental_rerun()
+            st.session_state.number_history.extend(new_numbers)  # Adiciona os novos números ao histórico existente
+        # Limpar o campo de entrada
+        st.session_state.number_input = ""
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
@@ -24,17 +28,15 @@ st.title("Análise de Números")
 st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
 # Campo de entrada para adicionar números separados por vírgula ou individualmente
-number_input = st.text_input(
+st.text_input(
     "Digite números separados por vírgula ou um número individual:",
-    value="",
+    value=st.session_state.number_input,
     key="number_input"
 )
 
 # Botão para confirmar a adição dos números
 if st.button("Adicionar número(s)"):
-    if number_input:
-        st.session_state.number_input = number_input  # Atribuir entrada ao estado
-        add_numbers()  # Chamar a função para adicionar números ao histórico
+    add_numbers()  # Chamar a função para adicionar números ao histórico
 
 # Analisar a lista completa de números inseridos
 if st.session_state.number_history:
