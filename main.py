@@ -18,7 +18,7 @@ def add_numbers():
         if new_numbers:
             st.session_state.number_history.extend(new_numbers)  # Adiciona os novos números ao histórico existente
         # Limpar o campo de entrada
-        st.session_state.number_input = ""
+        st.session_state.number_input = ""  # Isso marca a entrada como processada
     except ValueError:
         st.error("Ocorreu um erro ao processar os números. Certifique-se de que estão no formato correto.")
 
@@ -27,8 +27,9 @@ st.set_page_config(layout="wide")  # Define o layout para tela larga
 st.title("Análise de Números")
 st.write("Insira números separados por vírgula ou um número individual para adicionar à sequência.")
 
-# Campo de entrada para adicionar números separados por vírgula ou individualmente
-st.text_input(
+# Controle de entrada para adicionar números
+input_placeholder = st.empty()  # Cria um espaço que será reutilizado para o campo de entrada
+input_value = input_placeholder.text_input(
     "Digite números separados por vírgula ou um número individual:",
     value=st.session_state.number_input,
     key="number_input"
@@ -37,6 +38,7 @@ st.text_input(
 # Botão para confirmar a adição dos números
 if st.button("Adicionar número(s)"):
     add_numbers()  # Chamar a função para adicionar números ao histórico
+    input_placeholder.empty()  # Força a redefinição do campo de entrada ao limpar o espaço
 
 # Analisar a lista completa de números inseridos
 if st.session_state.number_history:
